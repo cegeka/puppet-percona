@@ -3,7 +3,7 @@ class percona::cluster( $version_shared_compat=undef,
                         $version_client=undef,
                         $version_galera=undef,
                         $data_dir='/data/mysql',
-                        $tmp_dir='/data/tmp',
+                        $tmp_dir='/data/mysql_tmp',
                         $ip_address=undef,
                         $cluster_address=undef,
                         $cluster_name=undef,
@@ -36,7 +36,7 @@ class percona::cluster( $version_shared_compat=undef,
   if ! $cluster_address {
     fail('Class[Percona::Cluster]: parameter cluster_address must be provided')
   }
-  if $cluster_address !~ /^((?:[0-9]{1,3}\.){3}[0-9]{1,3},*)*/ {
+  if $cluster_address !~ /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}(,((?:[0-9]{1,3}\.){3}[0-9]{1,3}))*$/ {
     fail('Class[Percona::Cluster]: parameter cluster_address must be a comma separated list of IP addresses')
   }
 
