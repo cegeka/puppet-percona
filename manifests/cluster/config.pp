@@ -1,4 +1,4 @@
-class percona::cluster::config($data_dir='/data/mysql', $tmp_dir='/data/tmp', $ip_address=undef, $cluster_address=undef, $cluster_name=undef) {
+class percona::cluster::config($data_dir='/data/mysql', $tmp_dir='/data/tmp', $ip_address=undef, $cluster_address=undef, $cluster_name=undef, $sst_method='rsync') {
 
   file { '/etc/my.cnf':
     ensure  => present,

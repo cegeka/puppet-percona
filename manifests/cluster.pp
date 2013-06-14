@@ -6,7 +6,8 @@ class percona::cluster( $version_shared_compat=undef,
                         $tmp_dir='/data/tmp',
                         $ip_address=undef,
                         $cluster_address=undef,
-                        $cluster_name=undef
+                        $cluster_name=undef,
+                        $sst_method='rsync'
 ) {
 
   if ! $version_shared_compat {
@@ -43,6 +44,10 @@ class percona::cluster( $version_shared_compat=undef,
     fail('Class[Percona::Cluster]: parameter cluster_name must be provided')
   }
 
+  if ! ($sst_method in ['mysqldump', 'rsync', 'xtrabackup']) {
+    fail('Class[Percona::Cluster]: parameter sst_method must be mysqldump, rsync or xtrabackup')
+  }
+
   class { 'percona::cluster::package':
     version_shared_compat => $version_shared_compat,
     version_server        => $version_server,
@@ -55,7 +60,8 @@ class percona::cluster( $version_shared_compat=undef,
     tmp_dir         => $tmp_dir,
     ip_address      => $ip_address,
     cluster_address => $cluster_address,
-    cluster_name    => $cluster_name
+    cluster_name    => $cluster_name,
+    sst_method      => $sst_method
   }
 
   Class['percona::cluster::package'] -> Class['percona::cluster::config']
