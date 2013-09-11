@@ -2,6 +2,7 @@ class percona::server($version_shared_compat=undef,
                       $version_shared=undef,
                       $version_server=undef,
                       $version_client=undef,
+                      $packagelock=false,
                       $data_dir='/data/mysql',
                       $tmp_dir='/data/mysql_tmp'
 ) {
@@ -26,7 +27,8 @@ class percona::server($version_shared_compat=undef,
     version_shared_compat => $version_shared_compat,
     version_shared        => $version_shared,
     version_server        => $version_server,
-    version_client        => $version_client
+    version_client        => $version_client,
+    packagelock           => $packagelock
   }
 
   class { 'percona::server::config':

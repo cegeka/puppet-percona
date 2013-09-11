@@ -3,3 +3,5 @@
 {<img src='https://codex.cegeka.be/jenkins/job/puppet-percona/badge/icon' />}[https://codex.cegeka.be/jenkins/job/puppet-percona/]
 
 This is the percona module.
+
+This module requires {cegeka/puppet-stdlib}[https://github.com/cegeka/puppet-stdlib] for packagelock support.
