@@ -18,6 +18,11 @@ class percona::cluster::package($version_shared_compat=undef, $version_server=un
     packagelock { 'Percona-XtraDB-Cluster-server': }
     packagelock { 'Percona-XtraDB-Cluster-client': }
     packagelock { 'Percona-XtraDB-Cluster-galera': }
+  } else {
+    packagelock { 'Percona-Server-shared-compat': ensure => absent }
+    packagelock { 'Percona-XtraDB-Cluster-server': ensure => absent }
+    packagelock { 'Percona-XtraDB-Cluster-client': ensure => absent }
+    packagelock { 'Percona-XtraDB-Cluster-galera': ensure => absent }
   }
 
 }

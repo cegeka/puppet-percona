@@ -18,6 +18,11 @@ class percona::server::package($version_shared_compat=undef,$version_shared=unde
     packagelock { 'Percona-Server-shared-55': }
     packagelock { 'Percona-Server-server-55': }
     packagelock { 'Percona-Server-client-55': }
+  } else {
+    packagelock { 'Percona-Server-shared-compat': ensure => absent }
+    packagelock { 'Percona-Server-shared-55': ensure => absent }
+    packagelock { 'Percona-Server-server-55': ensure => absent }
+    packagelock { 'Percona-Server-client-55': ensure => absent }
   }
 
 }

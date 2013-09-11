@@ -10,6 +10,8 @@ class percona::toolkit($version=undef, $packagelock=false) {
 
   if $packagelock {
     packagelock { 'percona-toolkit': }
+  } else {
+    packagelock { 'percona-toolkit': ensure => absent }
   }
 
 }

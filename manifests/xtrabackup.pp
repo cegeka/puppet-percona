@@ -10,6 +10,8 @@ class percona::xtrabackup($version=undef, $packagelock=false) {
 
   if $packagelock {
     packagelock { 'percona-xtrabackup': }
+  } else {
+    packagelock { 'percona-xtrabackup': ensure => absent }
   }
 
 }
