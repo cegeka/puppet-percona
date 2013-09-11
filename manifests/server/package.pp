@@ -1,4 +1,4 @@
-class percona::server::package($version_shared_compat=undef,$version_shared=undef,$version_server=undef,$version_client=undef) {
+class percona::server::package($version_shared_compat=undef,$version_shared=undef,$version_server=undef,$version_client=undef, $packagelock=false) {
 
   package {
     'Percona-Server-shared-compat' :
@@ -12,5 +12,17 @@ class percona::server::package($version_shared_compat=undef,$version_shared=unde
   }
 
   Package['Percona-Server-shared-compat'] -> Package['Percona-Server-shared-55'] -> Package['Percona-Server-server-55'] -> Package['Percona-Server-client-55']
+
+  if $packagelock {
+    packagelock { 'Percona-Server-shared-compat': }
+    packagelock { 'Percona-Server-shared-55': }
+    packagelock { 'Percona-Server-server-55': }
+    packagelock { 'Percona-Server-client-55': }
+  } else {
+    packagelock { 'Percona-Server-shared-compat': ensure => absent }
+    packagelock { 'Percona-Server-shared-55': ensure => absent }
+    packagelock { 'Percona-Server-server-55': ensure => absent }
+    packagelock { 'Percona-Server-client-55': ensure => absent }
+  }
 
 }

@@ -1,4 +1,4 @@
-class percona::toolkit($version=undef) {
+class percona::toolkit($version=undef, $packagelock=false) {
 
   if ! $version {
     fail('Class[Percona::Toolkit]: parameter version must be provided')
@@ -6,6 +6,12 @@ class percona::toolkit($version=undef) {
 
   package { 'percona-toolkit':
     ensure => $version
+  }
+
+  if $packagelock {
+    packagelock { 'percona-toolkit': }
+  } else {
+    packagelock { 'percona-toolkit': ensure => absent }
   }
 
 }

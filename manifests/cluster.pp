@@ -2,6 +2,7 @@ class percona::cluster( $version_shared_compat=undef,
                         $version_server=undef,
                         $version_client=undef,
                         $version_galera=undef,
+                        $packagelock=false,
                         $data_dir='/data/mysql',
                         $tmp_dir='/data/mysql_tmp',
                         $ip_address=undef,
@@ -52,7 +53,8 @@ class percona::cluster( $version_shared_compat=undef,
     version_shared_compat => $version_shared_compat,
     version_server        => $version_server,
     version_client        => $version_client,
-    version_galera        => $version_galera
+    version_galera        => $version_galera,
+    packagelock           => $packagelock
   }
 
   class { 'percona::cluster::config':
