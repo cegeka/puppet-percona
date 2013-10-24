@@ -1,4 +1,4 @@
-class percona::cluster::package($version_shared_compat=undef, $version_server=undef, $version_client=undef, $version_galera=undef, $version_lock=false) {
+class percona::cluster::package($version_shared_compat=undef, $version_server=undef, $version_client=undef, $version_galera=undef, $versionlock=false) {
 
   package {
     'Percona-Server-shared-compat' :
@@ -13,7 +13,7 @@ class percona::cluster::package($version_shared_compat=undef, $version_server=un
 
   Package['Percona-Server-shared-compat'] -> Package['Percona-XtraDB-Cluster-server'] -> Package['Percona-XtraDB-Cluster-client'] -> Package['Percona-XtraDB-Cluster-galera']
 
-  case $version_lock {
+  case $versionlock {
     true: {
       packagelock { 'Percona-Server-shared-compat': }
       packagelock { 'Percona-XtraDB-Cluster-server': }
@@ -26,7 +26,7 @@ class percona::cluster::package($version_shared_compat=undef, $version_server=un
       packagelock { 'Percona-XtraDB-Cluster-client': ensure => absent }
       packagelock { 'Percona-XtraDB-Cluster-galera': ensure => absent }
     }
-    default: { fail('Class[Percona::Cluster::Package]: parameter version_lock must be true or false')}
+    default: { fail('Class[Percona::Cluster::Package]: parameter versionlock must be true or false')}
   }
 
 }

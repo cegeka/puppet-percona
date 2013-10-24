@@ -1,4 +1,4 @@
-class percona::server::package($version_shared_compat=undef,$version_shared=undef,$version_server=undef,$version_client=undef, $version_lock=false) {
+class percona::server::package($version_shared_compat=undef,$version_shared=undef,$version_server=undef,$version_client=undef, $versionlock=false) {
 
   package {
     'Percona-Server-shared-compat' :
@@ -13,7 +13,7 @@ class percona::server::package($version_shared_compat=undef,$version_shared=unde
 
   Package['Percona-Server-shared-compat'] -> Package['Percona-Server-shared-55'] -> Package['Percona-Server-server-55'] -> Package['Percona-Server-client-55']
 
-  case $version_lock {
+  case $versionlock {
     true: {
       packagelock { 'Percona-Server-shared-compat': }
       packagelock { 'Percona-Server-shared-55': }
@@ -26,7 +26,7 @@ class percona::server::package($version_shared_compat=undef,$version_shared=unde
       packagelock { 'Percona-Server-server-55': ensure => absent }
       packagelock { 'Percona-Server-client-55': ensure => absent }
     }
-    default: { fail('Class[Percona::Server::Package]: parameter version_lock must be true or false')}
+    default: { fail('Class[Percona::Server::Package]: parameter versionlock must be true or false')}
   }
 
 
