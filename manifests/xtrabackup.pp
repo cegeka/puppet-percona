@@ -1,4 +1,4 @@
-class percona::xtrabackup($version=undef, $version_lock=false) {
+class percona::xtrabackup($version=undef, $versionlock=false) {
 
   if ! $version {
     fail('Class[Percona::Xtrabackup]: parameter version must be provided')
@@ -8,14 +8,14 @@ class percona::xtrabackup($version=undef, $version_lock=false) {
     ensure => $version
   }
 
-  case $version_lock {
+  case $versionlock {
     true: {
       packagelock { 'percona-xtrabackup': }
     }
     false: {
       packagelock { 'percona-xtrabackup': ensure => absent }
     }
-    default: { fail('Class[Percona::Xtrabackup]: parameter version_lock must be true or false')}
+    default: { fail('Class[Percona::Xtrabackup]: parameter versionlock must be true or false')}
   }
 
 }
