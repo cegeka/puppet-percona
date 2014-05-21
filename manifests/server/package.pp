@@ -1,4 +1,11 @@
-class percona::server::package($version_shared_compat=undef,$version_shared=undef,$version_server=undef,$version_client=undef, $versionlock=false) {
+class percona::server::package(
+  $version_shared_compat=undef,
+  $version_shared=undef,
+  $version_server=undef,
+  $version_client=undef,
+  $version_debuginfo=undef,
+  $versionlock=false
+) {
 
   $percona_major_version = regsubst($version_server, '^(\d\.\d)\.(\d+)-(.*)','\1')
   $_percona_major_version = regsubst($percona_major_version, '\.', '', 'G')
@@ -13,12 +20,15 @@ class percona::server::package($version_shared_compat=undef,$version_shared=unde
       ensure => $version_server;
     "Percona-Server-client-${_percona_major_version}" :
       ensure => $version_client;
+    "Percona-Server-${_percona_major_version}-debuginfo" :
+      ensure => $version_debuginfo;
   }
 
   Package['Percona-Server-shared-compat']
     -> Package["Percona-Server-shared-${_percona_major_version}"]
     -> Package["Percona-Server-server-${_percona_major_version}"]
     -> Package["Percona-Server-client-${_percona_major_version}"]
+    -> Package["Percona-Server-${_percona_major_version}-debuginfo"]
 
   case $versionlock {
     true: {
@@ -26,12 +36,14 @@ class percona::server::package($version_shared_compat=undef,$version_shared=unde
       packagelock { "Percona-Server-shared-${_percona_major_version}": }
       packagelock { "Percona-Server-server-${_percona_major_version}": }
       packagelock { "Percona-Server-client-${_percona_major_version}": }
+      packagelock { "Percona-Server-${_percona_major_version}-debuginfo": }
     }
     false: {
       packagelock { 'Percona-Server-shared-compat': ensure => absent }
       packagelock { "Percona-Server-shared-${_percona_major_version}": ensure => absent }
       packagelock { "Percona-Server-server-${_percona_major_version}": ensure => absent }
       packagelock { "Percona-Server-client-${_percona_major_version}": ensure => absent }
+      packagelock { "Percona-Server-${_percona_major_version}-debuginfo": ensure => absent }
     }
     default: { fail('Class[Percona::Server::Package]: parameter versionlock must be true or false')}
   }
