@@ -1,7 +1,9 @@
 class percona::cluster( $version_shared_compat=undef,
                         $version_server=undef,
                         $version_client=undef,
+                        $version_debuginfo=undef,
                         $version_galera=undef,
+                        $version_galera_debuginfo=undef,
                         $versionlock=false,
                         $data_dir='/data/mysql',
                         $tmp_dir='/data/mysql_tmp',
@@ -23,8 +25,16 @@ class percona::cluster( $version_shared_compat=undef,
     fail('Class[Percona::Cluster]: parameter version_client must be provided')
   }
 
+  if ! $version_debuginfo {
+    fail('Class[Percona::Cluster]: parameter version_debuginfo must be provided')
+  }
+
   if ! $version_galera {
     fail('Class[Percona::Cluster]: parameter version_galera must be provided')
+  }
+
+  if ! $version_galera_debuginfo {
+    fail('Class[Percona::Cluster]: parameter version_galera_debuginfo must be provided')
   }
 
   if ! $ip_address {
@@ -50,11 +60,13 @@ class percona::cluster( $version_shared_compat=undef,
   }
 
   class { 'percona::cluster::package':
-    version_shared_compat => $version_shared_compat,
-    version_server        => $version_server,
-    version_client        => $version_client,
-    version_galera        => $version_galera,
-    versionlock          => $versionlock
+    version_shared_compat    => $version_shared_compat,
+    version_server           => $version_server,
+    version_client           => $version_client,
+    version_debuginfo        => $version_debuginfo,
+    version_galera           => $version_galera,
+    version_galera_debuginfo => $version_galera_debuginfo,
+    versionlock              => $versionlock
   }
 
   class { 'percona::cluster::config':
