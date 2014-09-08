@@ -16,8 +16,6 @@ class percona::cluster::package(
   debug("Galera major version = ${galera_major_version}")
 
   package {
-    'Percona-Server-shared-compat' :
-      ensure => $version_shared_compat;
     "Percona-XtraDB-Cluster-server-${_percona_major_version}" :
       ensure => $version_server;
     "Percona-XtraDB-Cluster-client-${_percona_major_version}" :
@@ -30,8 +28,7 @@ class percona::cluster::package(
       ensure => $version_galera_debuginfo;
   }
 
-  Package['Percona-Server-shared-compat']
-    -> Package["Percona-XtraDB-Cluster-galera-${_galera_major_version}"]
+  Package["Percona-XtraDB-Cluster-galera-${_galera_major_version}"]
     -> Package["Percona-XtraDB-Cluster-galera-${_galera_major_version}-debuginfo"]
     -> Package["Percona-XtraDB-Cluster-server-${_percona_major_version}"]
     -> Package["Percona-XtraDB-Cluster-client-${_percona_major_version}"]
@@ -39,7 +36,6 @@ class percona::cluster::package(
 
   case $versionlock {
     true: {
-      packagelock { 'Percona-Server-shared-compat': }
       packagelock { "Percona-XtraDB-Cluster-server-${_percona_major_version}": }
       packagelock { "Percona-XtraDB-Cluster-client-${_percona_major_version}": }
       packagelock { "Percona-XtraDB-Cluster-${_percona_major_version}-debuginfo": }
@@ -47,7 +43,6 @@ class percona::cluster::package(
       packagelock { "Percona-XtraDB-Cluster-galera-${_galera_major_version}-debuginfo": }
     }
     false: {
-      packagelock { 'Percona-Server-shared-compat': ensure => absent }
       packagelock { "Percona-XtraDB-Cluster-server-${_percona_major_version}": ensure => absent }
       packagelock { "Percona-XtraDB-Cluster-client-${_percona_major_version}": ensure => absent }
       packagelock { "Percona-XtraDB-Cluster-${_percona_major_version}-debuginfo": ensure => absent }
