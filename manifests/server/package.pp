@@ -12,8 +12,6 @@ class percona::server::package(
   debug("Percona major version = ${percona_major_version}")
 
   package {
-    'Percona-Server-shared-compat' :
-      ensure => $version_shared_compat;
     "Percona-Server-shared-${_percona_major_version}" :
       ensure => $version_shared;
     "Percona-Server-server-${_percona_major_version}" :
@@ -24,22 +22,19 @@ class percona::server::package(
       ensure => $version_debuginfo;
   }
 
-  Package['Percona-Server-shared-compat']
-    -> Package["Percona-Server-shared-${_percona_major_version}"]
+  Package["Percona-Server-shared-${_percona_major_version}"]
     -> Package["Percona-Server-server-${_percona_major_version}"]
     -> Package["Percona-Server-client-${_percona_major_version}"]
     -> Package["Percona-Server-${_percona_major_version}-debuginfo"]
 
   case $versionlock {
     true: {
-      packagelock { 'Percona-Server-shared-compat': }
       packagelock { "Percona-Server-shared-${_percona_major_version}": }
       packagelock { "Percona-Server-server-${_percona_major_version}": }
       packagelock { "Percona-Server-client-${_percona_major_version}": }
       packagelock { "Percona-Server-${_percona_major_version}-debuginfo": }
     }
     false: {
-      packagelock { 'Percona-Server-shared-compat': ensure => absent }
       packagelock { "Percona-Server-shared-${_percona_major_version}": ensure => absent }
       packagelock { "Percona-Server-server-${_percona_major_version}": ensure => absent }
       packagelock { "Percona-Server-client-${_percona_major_version}": ensure => absent }
