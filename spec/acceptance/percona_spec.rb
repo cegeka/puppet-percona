@@ -11,8 +11,8 @@ describe 'percona' do
 
         class { 'cegekarepos' : stage => 'setup_repo' }
 
+        Yum::Repo <| title == 'epel' |>
         Yum::Repo <| title == 'percona' |>
-
 
         $percona_version = '5.6.21-25.8.938.el6'
         $compat_version = '5.1.68-rel14.6.551.rhel6'
