@@ -52,7 +52,7 @@ describe 'percona' do
           sst_method               => 'xtrabackup'
         }
 
-        service { 'percona' :
+        service { 'mysql' :
           ensure     => 'running',
           enable     => true,
         }
