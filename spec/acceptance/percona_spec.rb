@@ -20,6 +20,11 @@ describe 'percona' do
         $xtrabackup_version = '2.2.9-5067.el6'
         $toolkit_version = '2.2.11-1'
 
+        file { '/data':
+          ensure => directory,
+          mode   => '0755'
+        }
+
         class { 'percona::toolkit':
           version     => $toolkit_version,
           versionlock => true
