@@ -52,6 +52,10 @@ describe 'percona' do
           sst_method               => 'xtrabackup'
         }
 
+        service { 'percona':
+          ensure: running
+        }
+
       EOS
 
       # Run it twice and test for idempotency
