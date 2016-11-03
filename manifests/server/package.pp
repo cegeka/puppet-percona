@@ -1,5 +1,5 @@
 class percona::server::package(
-  $package_shared_compat=undef
+  $package_shared_compat=undef,
   $version_shared_compat=undef,
   $version_shared=undef,
   $version_server=undef,
