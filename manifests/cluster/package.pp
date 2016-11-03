@@ -13,11 +13,11 @@ class percona::cluster::package (
   $_percona_major_version = regsubst($percona_major_version, '\.', '', 'G')
   debug("Percona major version = ${percona_major_version}")
 
-  $galera_major_version = regsubst($version_galera, '^(\d)\.(\d)-(.*)','\1')
+  $galera_major_version = regsubst($version_galera, '^(\d)\.(\d+)-(.*)','\1')
   $_galera_major_version = regsubst($galera_major_version, '\.', '', 'G')
   debug("Galera major version = ${galera_major_version}")
 
-  if defined($package_shared_compat) {
+  if $package_shared_compat {
     $real_package_shared_compat = $package_shared_compat
   } else {
     $real_package_shared_compat = 'Percona-Server-shared-compat'
