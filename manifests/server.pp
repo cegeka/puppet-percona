@@ -1,11 +1,13 @@
-class percona::server($version_shared_compat=undef,
-                      $version_shared=undef,
-                      $version_server=undef,
-                      $version_client=undef,
-                      $version_debuginfo=undef,
-                      $versionlock=false,
-                      $data_dir='/data/mysql',
-                      $tmp_dir='/data/mysql_tmp'
+class percona::server (
+  $package_shared_compat=undef,
+  $version_shared_compat=undef,
+  $version_shared=undef,
+  $version_server=undef,
+  $version_client=undef,
+  $version_debuginfo=undef,
+  $versionlock=false,
+  $data_dir='/data/mysql',
+  $tmp_dir='/data/mysql_tmp'
 ) {
 
   if ! $version_shared_compat {
@@ -29,6 +31,7 @@ class percona::server($version_shared_compat=undef,
   }
 
   class { 'percona::server::package':
+    package_shared_compat => $package_shared_compat,
     version_shared_compat => $version_shared_compat,
     version_shared        => $version_shared,
     version_server        => $version_server,
