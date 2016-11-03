@@ -1,16 +1,18 @@
-class percona::cluster( $version_shared_compat=undef,
-                        $version_server=undef,
-                        $version_client=undef,
-                        $version_debuginfo=undef,
-                        $version_galera=undef,
-                        $version_galera_debuginfo=undef,
-                        $versionlock=false,
-                        $data_dir='/data/mysql',
-                        $tmp_dir='/data/mysql_tmp',
-                        $ip_address=undef,
-                        $cluster_address=undef,
-                        $cluster_name=undef,
-                        $sst_method='rsync'
+class percona::cluster (
+  $package_shared_compat=undef,
+  $version_shared_compat=undef,
+  $version_server=undef,
+  $version_client=undef,
+  $version_debuginfo=undef,
+  $version_galera=undef,
+  $version_galera_debuginfo=undef,
+  $versionlock=false,
+  $data_dir='/data/mysql',
+  $tmp_dir='/data/mysql_tmp',
+  $ip_address=undef,
+  $cluster_address=undef,
+  $cluster_name=undef,
+  $sst_method='rsync'
 ) {
 
   if ! $version_shared_compat {
@@ -60,6 +62,7 @@ class percona::cluster( $version_shared_compat=undef,
   }
 
   class { 'percona::cluster::package':
+    package_shared_compat    => $package_shared_compat,
     version_shared_compat    => $version_shared_compat,
     version_server           => $version_server,
     version_client           => $version_client,
