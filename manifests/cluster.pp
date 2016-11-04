@@ -1,42 +1,17 @@
 class percona::cluster (
-  $package_shared_compat=undef,
-  $version_shared_compat=undef,
-  $version_server=undef,
-  $version_client=undef,
-  $version_debuginfo=undef,
-  $version_galera=undef,
-  $version_galera_debuginfo=undef,
-  $versionlock=false,
-  $data_dir='/data/mysql',
-  $tmp_dir='/data/mysql_tmp',
-  $ip_address=undef,
-  $cluster_address=undef,
-  $cluster_name=undef,
-  $sst_method='rsync'
+  $version_server   = undef,
+  $versionlock      = false,
+  $data_dir         = '/data/mysql',
+  $tmp_dir          = '/data/mysql_tmp',
+  $ip_address       = undef,
+  $cluster_address  = undef,
+  $cluster_name     = undef,
+  $sst_method       = 'rsync',
+  $replace_mycnf    = false
 ) {
-
-  if ! $version_shared_compat {
-    fail('Class[Percona::Cluster]: parameter version_shared_compat must be provided')
-  }
 
   if ! $version_server {
     fail('Class[Percona::Cluster]: parameter version_server must be provided')
-  }
-
-  if ! $version_client {
-    fail('Class[Percona::Cluster]: parameter version_client must be provided')
-  }
-
-  if ! $version_debuginfo {
-    fail('Class[Percona::Cluster]: parameter version_debuginfo must be provided')
-  }
-
-  if ! $version_galera {
-    fail('Class[Percona::Cluster]: parameter version_galera must be provided')
-  }
-
-  if ! $version_galera_debuginfo {
-    fail('Class[Percona::Cluster]: parameter version_galera_debuginfo must be provided')
   }
 
   if ! $ip_address {
@@ -62,14 +37,8 @@ class percona::cluster (
   }
 
   class { 'percona::cluster::package':
-    package_shared_compat    => $package_shared_compat,
-    version_shared_compat    => $version_shared_compat,
-    version_server           => $version_server,
-    version_client           => $version_client,
-    version_debuginfo        => $version_debuginfo,
-    version_galera           => $version_galera,
-    version_galera_debuginfo => $version_galera_debuginfo,
-    versionlock              => $versionlock
+    version_server  => $version_server,
+    versionlock     => $versionlock
   }
 
   class { 'percona::cluster::config':
@@ -78,7 +47,8 @@ class percona::cluster (
     ip_address      => $ip_address,
     cluster_address => $cluster_address,
     cluster_name    => $cluster_name,
-    sst_method      => $sst_method
+    sst_method      => $sst_method,
+    replace_mycnf   => $replace_mycnf
   }
 
   Class['percona::cluster::package'] -> Class['percona::cluster::config']

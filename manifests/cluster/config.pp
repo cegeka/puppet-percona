@@ -1,4 +1,12 @@
-class percona::cluster::config($data_dir='/data/mysql', $tmp_dir='/data/tmp', $ip_address=undef, $cluster_address=undef, $cluster_name=undef, $sst_method='rsync') {
+class percona::cluster::config(
+  $data_dir         = '/data/mysql',
+  $tmp_dir          = '/data/mysql_tmp',
+  $ip_address       = undef,
+  $cluster_address  = undef,
+  $cluster_name     = undef,
+  $sst_method       = 'rsync',
+  $replace_mycnf    = false
+) {
 
   file { '/etc/my.cnf':
     ensure  => present,
@@ -6,7 +14,7 @@ class percona::cluster::config($data_dir='/data/mysql', $tmp_dir='/data/tmp', $i
     group   => root,
     mode    => '0644',
     content => template("${module_name}/cluster/my.cnf.erb"),
-    replace => false
+    replace => $replace_mycnf
   }
 
   file { $data_dir:
