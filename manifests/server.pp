@@ -12,13 +12,13 @@ class percona::server (
 
   class { 'percona::server::package':
     version_server => $version_server,
-    versionlock    => $versionlock,
-    replace_mycnf  => $replace_mycnf
+    versionlock    => $versionlock
   }
 
   class { 'percona::server::config':
-    data_dir => $data_dir,
-    tmp_dir  => $tmp_dir
+    data_dir      => $data_dir,
+    tmp_dir       => $tmp_dir,
+    replace_mycnf => $replace_mycnf
   }
 
   Class['percona::server::package'] -> Class['percona::server::config']
