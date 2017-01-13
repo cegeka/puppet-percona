@@ -1,4 +1,8 @@
-class percona::server::config($data_dir='/data/mysql', $tmp_dir='/data/mysql_tmp') {
+class percona::server::config (
+  $data_dir       ='/data/mysql',
+  $tmp_dir        ='/data/mysql_tmp',
+  $replace_mycnf  = false
+) {
 
   file { '/etc/my.cnf':
     ensure  => present,
@@ -6,7 +10,7 @@ class percona::server::config($data_dir='/data/mysql', $tmp_dir='/data/mysql_tmp
     group   => root,
     mode    => '0644',
     content => template("${module_name}/server/my.cnf.erb"),
-    replace => false,
+    replace => $replace_mycnf,
   }
 
   file { $data_dir:

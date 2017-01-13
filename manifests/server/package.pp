@@ -1,9 +1,5 @@
 class percona::server::package(
-  $version_shared_compat=undef,
-  $version_shared=undef,
   $version_server=undef,
-  $version_client=undef,
-  $version_debuginfo=undef,
   $versionlock=false
 ) {
 
@@ -12,38 +8,16 @@ class percona::server::package(
   debug("Percona major version = ${percona_major_version}")
 
   package {
-    'Percona-Server-shared-compat' :
-      ensure => $version_shared_compat;
-    "Percona-Server-shared-${_percona_major_version}" :
-      ensure => $version_shared;
     "Percona-Server-server-${_percona_major_version}" :
       ensure => $version_server;
-    "Percona-Server-client-${_percona_major_version}" :
-      ensure => $version_client;
-    "Percona-Server-${_percona_major_version}-debuginfo" :
-      ensure => $version_debuginfo;
   }
-
-  Package['Percona-Server-shared-compat']
-    -> Package["Percona-Server-shared-${_percona_major_version}"]
-    -> Package["Percona-Server-server-${_percona_major_version}"]
-    -> Package["Percona-Server-client-${_percona_major_version}"]
-    -> Package["Percona-Server-${_percona_major_version}-debuginfo"]
 
   case $versionlock {
     true: {
-      packagelock { 'Percona-Server-shared-compat': }
-      packagelock { "Percona-Server-shared-${_percona_major_version}": }
       packagelock { "Percona-Server-server-${_percona_major_version}": }
-      packagelock { "Percona-Server-client-${_percona_major_version}": }
-      packagelock { "Percona-Server-${_percona_major_version}-debuginfo": }
     }
     false: {
-      packagelock { 'Percona-Server-shared-compat': ensure => absent }
-      packagelock { "Percona-Server-shared-${_percona_major_version}": ensure => absent }
       packagelock { "Percona-Server-server-${_percona_major_version}": ensure => absent }
-      packagelock { "Percona-Server-client-${_percona_major_version}": ensure => absent }
-      packagelock { "Percona-Server-${_percona_major_version}-debuginfo": ensure => absent }
     }
     default: { fail('Class[Percona::Server::Package]: parameter versionlock must be true or false')}
   }
