@@ -14,7 +14,7 @@ describe 'percona' do
         Yum::Repo <| title == 'epel' |>
         Yum::Repo <| title == 'percona' |>
 
-        $percona_version = '5.6.21-25.8.938.el6'
+        $percona_version = '5.6.32-25.17.1.el6'
         $toolkit_version = '2.2.11-1'
 
         file { '/data':
