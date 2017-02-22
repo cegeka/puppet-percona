@@ -14,10 +14,7 @@ describe 'percona' do
         Yum::Repo <| title == 'epel' |>
         Yum::Repo <| title == 'percona' |>
 
-        $percona_version = '5.6.21-25.8.938.el6'
-        $compat_version = '5.1.68-rel14.6.551.rhel6'
-        $galera_version = '3.8-1.3390.rhel6'
-        $xtrabackup_version = '2.2.9-5067.el6'
+        $percona_version = '5.6.32-25.17.1.el6'
         $toolkit_version = '2.2.11-1'
 
         file { '/data':
@@ -30,19 +27,8 @@ describe 'percona' do
           versionlock => true
         }
 
-        class { 'percona::xtrabackup':
-          version           => $xtrabackup_version,
-          version_debuginfo => $xtrabackup_version,
-          versionlock       => true
-        }
-
         class { 'percona::cluster':
-          version_shared_compat    => $compat_version,
           version_server           => $percona_version,
-          version_client           => $percona_version,
-          version_debuginfo        => $percona_version,
-          version_galera           => $galera_version,
-          version_galera_debuginfo => $galera_version,
           versionlock              => true,
           data_dir                 => '/data/mysql',
           tmp_dir                  => '/data/mysql_tmp',
