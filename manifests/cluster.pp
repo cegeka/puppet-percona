@@ -32,8 +32,8 @@ class percona::cluster (
     fail('Class[Percona::Cluster]: parameter cluster_name must be provided')
   }
 
-  if ! ($sst_method in ['mysqldump', 'rsync', 'xtrabackup']) {
-    fail('Class[Percona::Cluster]: parameter sst_method must be mysqldump, rsync or xtrabackup')
+  if ! ($sst_method in ['mysqldump', 'rsync', 'xtrabackup', 'xtrabackup-v2']) {
+    fail('Class[Percona::Cluster]: parameter sst_method must be mysqldump, rsync, xtrabackup or xtrabackup-v2')
   }
 
   class { 'percona::cluster::package':
