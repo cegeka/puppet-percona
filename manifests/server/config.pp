@@ -1,7 +1,9 @@
 class percona::server::config (
-  $data_dir       ='/data/mysql',
-  $tmp_dir        ='/data/mysql_tmp',
-  $replace_mycnf  = false
+  $socket_cnf          ='/var/lib/mysql/mysql.sock',
+  $data_dir            ='/data/mysql',
+  $tmp_dir             ='/data/mysql_tmp',
+  $replace_mycnf       = false,
+  $replace_root_mycnf  = false
 ) {
 
   file { '/etc/my.cnf':
@@ -25,5 +27,12 @@ class percona::server::config (
     group   => 'mysql',
     require => File[$data_dir]
   }
-
+  file { '/root/.my.cnf':
+    ensure  => present,
+    owner   => root,
+    group   => root,
+    mode    => '0644',
+    content => template("${module_name}/server/root_my.cnf.erb"),
+    replace => $replace_root_mycnf
+  }
 }
