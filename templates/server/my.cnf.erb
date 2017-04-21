@@ -1,7 +1,7 @@
 [mysqld]
 datadir=<%= @data_dir %>
 tmpdir=<%= @tmp_dir %>
-socket=/var/lib/mysql/mysql.sock
+socket=<%= @socket_cnf %>
 user=mysql
 default-storage-engine = InnoDB
 
