@@ -34,7 +34,7 @@ define percona::provision::rights(
 
   if $::mysql_exists {
     if $secret_id == undef and $password == undef {
-      fail("You must privide a password or a secret_id to ::mysql::rights")
+      fail('You must privide a password or a secret_id to ::mysql::rights')
     }
 
     if $secret_id != undef {
@@ -47,14 +47,14 @@ define percona::provision::rights(
       ensure        => $ensure,
       password_hash => mysql_password($mysql_password),
       provider      => 'mysql',
-      require       => [ File['/root/.my.cnf'], Service["${::percona::provision::service::myservice}"] ] 
+      require       => [ File['/root/.my.cnf'], Service[${::percona::provision::service::myservice}] ]
     })
 
     if $ensure == 'present' {
       mysql_grant { "${user}@${host}/${database}":
         privileges => $priv,
         provider   => 'mysql',
-        require    => [ Mysql_user["${user}@${host}"], Service["${::percona::provision::service::myservice}"] ]
+        require    => [ Mysql_user["${user}@${host}"], Service[${::percona::provision::service::myservice}] ]
       }
     }
 
