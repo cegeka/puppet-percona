@@ -10,6 +10,6 @@ class percona::provision::service() {
     enable     => true,
     hasrestart => true,
     hasstatus  => true,
-    require    => [ Class[Percona::Server::Package], File['/root/.my.cnf'] ],
+    require    => [ Class[Percona::Server::Package], Class[Percona::Server::Config] ],
   }
 }
