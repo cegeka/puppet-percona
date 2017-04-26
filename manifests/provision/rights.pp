@@ -43,23 +43,23 @@ define percona::provision::rights(
       $mysql_password = $password
     }
 
-    ensure_resource('mysql_user', "${user}@${host}", {
+    ensure_resource('percona_user', "${user}@${host}", {
       ensure        => $ensure,
       password_hash => mysql_password($mysql_password),
       provider      => 'mysql',
-      require       => [ File['/root/.my.cnf'], Service[${::percona::provision::service::myservice}] ]
+      require       => [ Class[Percona::Server::Package], Service["${::percona::provision::service::myservice}"] ]
     })
 
     if $ensure == 'present' {
       mysql_grant { "${user}@${host}/${database}":
         privileges => $priv,
         provider   => 'mysql',
-        require    => [ Mysql_user["${user}@${host}"], Service[${::percona::provision::service::myservice}] ]
+        require    => [ Percona_user["${user}@${host}"], Service["${::percona::provision::service::myservice}"] ]
       }
     }
 
     if $ensure == 'absent' {
-      mysql_user { "${user}@${host}":
+      percona_user { "${user}@${host}":
         ensure => absent
       }
     }

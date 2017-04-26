@@ -1,5 +1,5 @@
 # This has to be a separate type to enable collecting
-Puppet::Type.newtype(:mysql_user) do
+Puppet::Type.newtype(:percona_user) do
   @doc = "Manage a database user. This includes management of users password as well as privileges"
 
   ensurable

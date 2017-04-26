@@ -1,11 +1,11 @@
 class percona::server (
+  $socket_cnf          = '/var/lib/mysql/mysql.sock',
   $version_server      = undef,
   $versionlock         = false,
   $data_dir            = '/data/mysql',
   $tmp_dir             = '/data/mysql_tmp',
   $replace_mycnf       = false,
   $replace_root_mycnf  = false,
-  $socket_cnf          = '/var/lib/mysql/mysql.sock'
 ) {
 
   if ! $version_server {

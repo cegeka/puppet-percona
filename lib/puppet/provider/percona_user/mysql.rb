@@ -1,11 +1,11 @@
-Puppet::Type.type(:mysql_user).provide(:mysql) do
+Puppet::Type.type(:percona_user).provide(:mysql) do
 
   desc "manage users for a mysql database."
 
   defaultfor :kernel => 'Linux'
 
   optional_commands :mysql      => 'mysql'
-  optional_commands :mysqladmin => 'mysqladmin'
+  #optional_commands :mysqladmin => 'mysqladmin'
 
   def self.instances
     users = mysql([defaults_file, "mysql", '-BNe' "select concat(User, '@',Host) as User from mysql.user"].compact).split("\n")
@@ -36,7 +36,6 @@ Puppet::Type.type(:mysql_user).provide(:mysql) do
 
   def flush
     @property_hash.clear
-    mysqladmin([defaults_file, "flush-privileges"].compact)
   end
 
   # Optional defaults file
