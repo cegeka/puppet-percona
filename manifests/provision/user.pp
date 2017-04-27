@@ -49,15 +49,15 @@ define percona::provision::user(
         lens    => 'MySQL.lns',
         changes => [
           "set target[.='client']/user root",
-          "set target[.='client']/password ${password}",
+          "set target[.='client']/password ${mysql_password}",
           "set target[.='mysql']/user root",
-          "set target[.='mysql']/password ${password}",
+          "set target[.='mysql']/password ${mysql_password}",
           "set target[.='mysqladmin']/user root",
-          "set target[.='mysqladmin']/password ${password}",
+          "set target[.='mysqladmin']/password ${mysql_password}",
           "set target[.='mysqldump']/user root",
-          "set target[.='mysqldump']/password ${password}",
+          "set target[.='mysqldump']/password ${mysql_password}",
           "set target[.='mysqlshow']/user root",
-          "set target[.='mysqlshow']/password ${password}"
+          "set target[.='mysqlshow']/password ${mysql_password}"
           ],
         require => Percona_user["root@${host}"]
       }
