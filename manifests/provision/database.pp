@@ -5,7 +5,7 @@ define percona::provision::database($ensure) {
   if $::mysql_exists {
     mysql_database { $name:
       ensure  => $ensure,
-      require => [Service["${::percona::provision::service::myservice}"], Class[Percona::Server::Package] ]
+      require => Service["${::percona::provision::service::myservice}"]
     }
   } else {
     fail("Mysql binary not found, Fact[::mysql_exists]:${::mysql_exists}")

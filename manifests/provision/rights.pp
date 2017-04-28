@@ -47,7 +47,7 @@ define percona::provision::rights(
       ensure        => $ensure,
       password_hash => mysql_password($mysql_password),
       provider      => 'mysql',
-      require       => [ Class[Percona::Server::Package], Service["${::percona::provision::service::myservice}"] ]
+      require       => Service["${::percona::provision::service::myservice}"]
     })
 
     if $ensure == 'present' {
