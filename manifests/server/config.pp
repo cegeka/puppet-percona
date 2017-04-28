@@ -5,6 +5,12 @@ class percona::server::config (
   $replace_mycnf      = false,
   $replace_root_mycnf = false
 ) {
+  if check_file('/root/.my.cnf','password=[\S]*') {
+    $real_replace_root_mycnf=false
+  }
+  else {
+    $real_replace_root_mycnf=$replace_root_mycnf
+  }
 
   file { '/etc/my.cnf':
     ensure  => present,
@@ -33,6 +39,6 @@ class percona::server::config (
     group   => root,
     mode    => '0644',
     content => template("${module_name}/server/root_my.cnf.erb"),
-    replace => $replace_root_mycnf
+    replace => $real_replace_root_mycnf
   }
 }
