@@ -1,9 +1,9 @@
 [mysqld]
 datadir=<%= @data_dir %>
 tmpdir=<%= @tmp_dir %>
-socket=/var/lib/mysql/mysql.sock
-user=mysql
-default-storage-engine = InnoDB
+socket=<%= @socket_cnf %>
+
+default-storage-engine=InnoDB
 
 character_set_server=utf8
 

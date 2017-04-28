@@ -1,9 +1,11 @@
 class percona::server (
-  $version_server = undef,
-  $versionlock    = false,
-  $data_dir       = '/data/mysql',
-  $tmp_dir        = '/data/mysql_tmp',
-  $replace_mycnf  = false
+  $socket_cnf          = '/var/lib/mysql/mysql.sock',
+  $version_server      = undef,
+  $versionlock         = false,
+  $data_dir            = '/data/mysql',
+  $tmp_dir             = '/data/mysql_tmp',
+  $replace_mycnf       = false,
+  $replace_root_mycnf  = false,
 ) {
 
   if ! $version_server {
@@ -16,9 +18,11 @@ class percona::server (
   }
 
   class { 'percona::server::config':
-    data_dir      => $data_dir,
-    tmp_dir       => $tmp_dir,
-    replace_mycnf => $replace_mycnf
+    data_dir           => $data_dir,
+    tmp_dir            => $tmp_dir,
+    replace_mycnf      => $replace_mycnf,
+    replace_root_mycnf => $replace_root_mycnf,
+    socket_cnf         => $socket_cnf
   }
 
   Class['percona::server::package'] -> Class['percona::server::config']
