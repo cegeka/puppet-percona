@@ -21,10 +21,19 @@ define percona::provision::user(
   $password=undef,
   $secret_id=undef,
   $host='localhost',
-  $ensure='present'
+  $ensure='present',
+  $type='server'
 ) {
 
-  include percona::provision::service
+  if $type == 'server' {
+    include percona::provision::service
+    $real_service = "${::percona::provision::service::myservice}"
+  }
+  else
+  {
+    include percona::provision::service_cluster
+    $real_service = "${::percona::provision::service_cluster::myservice}"
+  }
 
   if $::mysql_exists {
     if $secret_id == undef and $password == undef {
@@ -42,7 +51,7 @@ define percona::provision::user(
         ensure        => $ensure,
         password_hash => mysql_password($mysql_password),
         provider      => 'mysql',
-        require       => Service["${::percona::provision::service::myservice}"]
+        require       => Service["${real_service}"]
       })
       augeas { '/root/.my.cnf':
         incl    => '/root/.my.cnf',
@@ -68,7 +77,7 @@ define percona::provision::user(
       ensure        => $ensure,
       password_hash => mysql_password($mysql_password),
       provider      => 'mysql',
-      require       => Service["${::percona::provision::service::myservice}"]
+      require       => Service["${real_service}"]
     })
     }
 
