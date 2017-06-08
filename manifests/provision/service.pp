@@ -1,7 +1,6 @@
 class percona::provision::service() {
 
   $myservice = $::operatingsystem ? {
-    /RedHat|Fedora|CentOS/  => 'mysqld',
     default                 => 'mysql',
   }
 
