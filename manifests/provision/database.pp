@@ -12,7 +12,7 @@ define percona::provision::database($ensure, $type='server') {
   if $::mysql_exists {
     mysql_database { $name:
       ensure  => $ensure,
-      require => Service["${service}"]
+      require => Service["${real_service}"]
     }
   } else {
     fail("Mysql binary not found, Fact[::mysql_exists]:${::mysql_exists}")
