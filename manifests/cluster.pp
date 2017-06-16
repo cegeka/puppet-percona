@@ -1,13 +1,15 @@
 class percona::cluster (
-  $version_server   = undef,
-  $versionlock      = false,
-  $data_dir         = '/data/mysql',
-  $tmp_dir          = '/data/mysql_tmp',
-  $ip_address       = undef,
-  $cluster_address  = undef,
-  $cluster_name     = undef,
-  $sst_method       = 'rsync',
-  $replace_mycnf    = false
+  $version_server     = undef,
+  $versionlock        = undef,
+  $version_galera     = undef,
+  $version_xtrabackup = undef,
+  $data_dir           = '/data/mysql',
+  $tmp_dir            = '/data/mysql_tmp',
+  $ip_address         = undef,
+  $cluster_address    = undef,
+  $cluster_name       = undef,
+  $sst_method         = 'rsync',
+  $replace_mycnf      = false
 ) {
 
   if ! $version_server {
@@ -37,8 +39,10 @@ class percona::cluster (
   }
 
   class { 'percona::cluster::package':
-    version_server  => $version_server,
-    versionlock     => $versionlock
+    version_server     => $version_server,
+    versionlock        => $versionlock,
+    version_xtrabackup => $version_xtrabackup,
+    version_galera     => $version_galera
   }
 
   class { 'percona::cluster::config':
