@@ -1,8 +1,9 @@
 class percona::cluster (
+  $version_galera,
   $version_server     = undef,
   $versionlock        = undef,
-  $version_galera     = undef,
   $version_xtrabackup = undef,
+  $xtrabackup_name    = undef,
   $data_dir           = '/data/mysql',
   $tmp_dir            = '/data/mysql_tmp',
   $ip_address         = undef,
@@ -42,7 +43,8 @@ class percona::cluster (
     version_server     => $version_server,
     versionlock        => $versionlock,
     version_xtrabackup => $version_xtrabackup,
-    version_galera     => $version_galera
+    version_galera     => $version_galera,
+    xtrabackup_name    => $xtrabackup_name
   }
 
   class { 'percona::cluster::config':
