@@ -10,7 +10,9 @@ class percona::cluster (
   $cluster_address    = undef,
   $cluster_name       = undef,
   $sst_method         = 'rsync',
-  $replace_mycnf      = false
+  $replace_mycnf      = false,
+  $replace_root_mycnf = false,
+  $socket_cnf         = '/var/lib/mysql/mysql.sock'
 ) {
 
   if ! $version_server {
@@ -48,15 +50,16 @@ class percona::cluster (
   }
 
   class { 'percona::cluster::config':
-    data_dir        => $data_dir,
-    tmp_dir         => $tmp_dir,
-    ip_address      => $ip_address,
-    cluster_address => $cluster_address,
-    cluster_name    => $cluster_name,
-    sst_method      => $sst_method,
-    replace_mycnf   => $replace_mycnf
+    data_dir           => $data_dir,
+    tmp_dir            => $tmp_dir,
+    ip_address         => $ip_address,
+    cluster_address    => $cluster_address,
+    cluster_name       => $cluster_name,
+    sst_method         => $sst_method,
+    replace_mycnf      => $replace_mycnf,
+    socket_cnf         => $socket_cnf,
+    replace_root_mycnf => $replace_root_mycnf
   }
 
   Class['percona::cluster::package'] -> Class['percona::cluster::config']
-
 }
