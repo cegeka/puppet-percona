@@ -1,13 +1,18 @@
 class percona::cluster (
-  $version_server   = undef,
-  $versionlock      = false,
-  $data_dir         = '/data/mysql',
-  $tmp_dir          = '/data/mysql_tmp',
-  $ip_address       = undef,
-  $cluster_address  = undef,
-  $cluster_name     = undef,
-  $sst_method       = 'rsync',
-  $replace_mycnf    = false
+  $version_galera     = undef,
+  $version_server     = undef,
+  $versionlock        = undef,
+  $version_xtrabackup = undef,
+  $xtrabackup_name    = undef,
+  $data_dir           = '/data/mysql',
+  $tmp_dir            = '/data/mysql_tmp',
+  $ip_address         = undef,
+  $cluster_address    = undef,
+  $cluster_name       = undef,
+  $sst_method         = 'rsync',
+  $replace_mycnf      = false,
+  $replace_root_mycnf = false,
+  $socket_cnf         = '/var/lib/mysql/mysql.sock'
 ) {
 
   if ! $version_server {
@@ -37,20 +42,24 @@ class percona::cluster (
   }
 
   class { 'percona::cluster::package':
-    version_server  => $version_server,
-    versionlock     => $versionlock
+    version_server     => $version_server,
+    versionlock        => $versionlock,
+    version_xtrabackup => $version_xtrabackup,
+    version_galera     => $version_galera,
+    xtrabackup_name    => $xtrabackup_name
   }
 
   class { 'percona::cluster::config':
-    data_dir        => $data_dir,
-    tmp_dir         => $tmp_dir,
-    ip_address      => $ip_address,
-    cluster_address => $cluster_address,
-    cluster_name    => $cluster_name,
-    sst_method      => $sst_method,
-    replace_mycnf   => $replace_mycnf
+    data_dir           => $data_dir,
+    tmp_dir            => $tmp_dir,
+    ip_address         => $ip_address,
+    cluster_address    => $cluster_address,
+    cluster_name       => $cluster_name,
+    sst_method         => $sst_method,
+    replace_mycnf      => $replace_mycnf,
+    socket_cnf         => $socket_cnf,
+    replace_root_mycnf => $replace_root_mycnf
   }
 
   Class['percona::cluster::package'] -> Class['percona::cluster::config']
-
 }

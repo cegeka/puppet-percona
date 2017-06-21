@@ -16,6 +16,9 @@ describe 'percona' do
 
         $percona_version = '5.6.32-25.17.1.el6'
         $toolkit_version = '2.2.11-1'
+        $version_xtrabackup = '2.3.6-1.el6'
+        $version_galera = '3.17-1.rhel6'
+        $xtrabackup_name = 'percona-xtrabackup'
 
         file { '/data':
           ensure => directory,
@@ -29,6 +32,9 @@ describe 'percona' do
 
         class { 'percona::cluster':
           version_server           => $percona_version,
+          version_xtrabackup       => $version_xtrabackup,
+          version_galera           => $version_galera,
+          xtrabackup_name          => $xtrabackup_name,
           versionlock              => true,
           data_dir                 => '/data/mysql',
           tmp_dir                  => '/data/mysql_tmp',
@@ -42,6 +48,14 @@ describe 'percona' do
           ensure     => 'running',
           enable     => true,
           require    => File['/etc/my.cnf'],
+        }
+        service { 'postfix':
+          ensure    => running,
+          hasstatus => true,
+          enable    => true
+        }
+        package { ['net-snmp', 'postfix'] :
+          ensure  => present,
         }
       EOS
 

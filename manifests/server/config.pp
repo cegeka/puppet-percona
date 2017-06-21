@@ -5,7 +5,7 @@ class percona::server::config (
   $replace_mycnf      = false,
   $replace_root_mycnf = false
 ) {
-  if check_file('/root/.my.cnf','password=[\S]*') {
+  if check_file('/root/.my.cnf','password=..*') {
     $real_replace_root_mycnf=false
   }
   else {
