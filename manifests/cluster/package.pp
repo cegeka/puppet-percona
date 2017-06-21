@@ -56,7 +56,7 @@ class percona::cluster::package (
     -> Service['postfix']
     -> Package["Percona-XtraDB-Cluster-client-${_percona_major_version}"]
     -> Package["Percona-XtraDB-Cluster-test-${_percona_major_version}"]
-    -> Package["${xtrabackup_name}"]
+    -> Package[$xtrabackup_name]
     -> Package["${xtrabackup_name}-debuginfo"]
     -> Package["Percona-XtraDB-Cluster-server-${_percona_major_version}"]
     -> Package["Percona-XtraDB-Cluster-${_percona_major_version}-debuginfo"]
@@ -90,7 +90,7 @@ class percona::cluster::package (
     -> Service['postfix']
     -> Package["Percona-XtraDB-Cluster-client-${_percona_major_version}"]
     -> Package["Percona-XtraDB-Cluster-test-${_percona_major_version}"]
-    -> Package["${xtrabackup_name}"]
+    -> Package[$xtrabackup_name]
     -> Package["${xtrabackup_name}-debuginfo"]
     -> Package["Percona-XtraDB-Cluster-server-${_percona_major_version}"]
     -> Package["Percona-XtraDB-Cluster-${_percona_major_version}-debuginfo"]
@@ -120,7 +120,7 @@ class percona::cluster::package (
       ensure => $version_server;
     "Percona-XtraDB-Cluster-${_percona_major_version}-debuginfo" :
       ensure => $version_server;
-    "${xtrabackup_name}" :
+    $xtrabackup_name :
       ensure => $version_xtrabackup;
     "${xtrabackup_name}-debuginfo" :
       ensure => $version_xtrabackup;
