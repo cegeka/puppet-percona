@@ -1,5 +1,5 @@
 class percona::cluster::package (
-  $version_galera,
+  $version_galera     = undef,
   $version_server     = undef,
   $versionlock        = undef, 
   $version_xtrabackup = undef,
