@@ -3,7 +3,8 @@ class percona::cluster::package (
   $version_server     = undef,
   $versionlock        = undef,
   $version_xtrabackup = undef,
-  $xtrabackup_name    = undef
+  $xtrabackup_name    = undef,
+  $server_shared_compat_name = 'Percona-Server-shared-compat'
 ) {
 
   $percona_major_version = regsubst($version_server, '^(\d\.\d)\.(\d+)-(.*)','\1')
@@ -77,35 +78,69 @@ class percona::cluster::package (
     }
   }
   else {
-    package {
-      "Percona-XtraDB-Cluster-garbd-${_percona_major_version}" :
-        ensure => $version_server;
-      "Percona-XtraDB-Cluster-shared-compat-${_percona_major_version}" :
-        ensure => $version_server;
-    }
-    Exec['remove-Percona-Server-shared-56']
-    -> Exec['remove-mariadb-libs']
-    -> Package["Percona-XtraDB-Cluster-shared-${_percona_major_version}"]
-    -> Package["Percona-XtraDB-Cluster-shared-compat-${_percona_major_version}"]
-    -> Service['postfix']
-    -> Package["Percona-XtraDB-Cluster-client-${_percona_major_version}"]
-    -> Package["Percona-XtraDB-Cluster-test-${_percona_major_version}"]
-    -> Package[$xtrabackup_name]
-    -> Package["${xtrabackup_name}-debuginfo"]
-    -> Package["Percona-XtraDB-Cluster-server-${_percona_major_version}"]
-    -> Package["Percona-XtraDB-Cluster-${_percona_major_version}-debuginfo"]
-    -> Package["Percona-XtraDB-Cluster-garbd-${_percona_major_version}"]
+    if $::operatingsystemmajrelease < 7 {
+      package {
+        "Percona-XtraDB-Cluster-garbd-${_percona_major_version}" :
+          ensure => $version_server;
+        $server_shared_compat_name :
+          ensure => present;
+      }
+      Exec['remove-Percona-Server-shared-56']
+      -> Exec['remove-mariadb-libs']
+      -> Package["Percona-XtraDB-Cluster-shared-${_percona_major_version}"]
+      -> Package[$server_shared_compat_name]
+      -> Service['postfix']
+      -> Package["Percona-XtraDB-Cluster-client-${_percona_major_version}"]
+      -> Package["Percona-XtraDB-Cluster-test-${_percona_major_version}"]
+      -> Package[$xtrabackup_name]
+      -> Package["${xtrabackup_name}-debuginfo"]
+      -> Package["Percona-XtraDB-Cluster-server-${_percona_major_version}"]
+      -> Package["Percona-XtraDB-Cluster-${_percona_major_version}-debuginfo"]
+      -> Package["Percona-XtraDB-Cluster-garbd-${_percona_major_version}"]
 
-    case $versionlock {
-      true: {
-        packagelock { "Percona-XtraDB-Cluster-garbd-${_percona_major_version}-${version_server}": }
-        packagelock { "Percona-XtraDB-Cluster-shared-compat-${_percona_major_version}-${version_server}": }
+      case $versionlock {
+        true: {
+          packagelock { "Percona-XtraDB-Cluster-garbd-${_percona_major_version}-${version_server}": }
+          packagelock { $server_shared_compat_name : }
+        }
+        false: {
+          packagelock { "Percona-XtraDB-Cluster-garbd-${_percona_major_version}-${version_server}": ensure => absent }
+          packagelock { $server_shared_compat_name : ensure => absent }
+        }
+        default: { fail('Class[Percona::Cluster::Package]: parameter versionlock must be true or false') }
       }
-      false: {
-        packagelock { "Percona-XtraDB-Cluster-garbd-${_percona_major_version}-${version_server}": ensure => absent }
-        packagelock { "Percona-XtraDB-Cluster-shared-compat-${_percona_major_version}-${version_server}": ensure => absent }
+    }
+    else {
+      package {
+        "Percona-XtraDB-Cluster-garbd-${_percona_major_version}" :
+          ensure => $version_server;
+        "Percona-XtraDB-Cluster-shared-compat-${_percona_major_version}" :
+          ensure => $version_server;
       }
-      default: { fail('Class[Percona::Cluster::Package]: parameter versionlock must be true or false')}
+      Exec['remove-Percona-Server-shared-56']
+      -> Exec['remove-mariadb-libs']
+      -> Package["Percona-XtraDB-Cluster-shared-${_percona_major_version}"]
+      -> Package["Percona-XtraDB-Cluster-shared-compat-${_percona_major_version}"]
+      -> Service['postfix']
+      -> Package["Percona-XtraDB-Cluster-client-${_percona_major_version}"]
+      -> Package["Percona-XtraDB-Cluster-test-${_percona_major_version}"]
+      -> Package[$xtrabackup_name]
+      -> Package["${xtrabackup_name}-debuginfo"]
+      -> Package["Percona-XtraDB-Cluster-server-${_percona_major_version}"]
+      -> Package["Percona-XtraDB-Cluster-${_percona_major_version}-debuginfo"]
+      -> Package["Percona-XtraDB-Cluster-garbd-${_percona_major_version}"]
+
+      case $versionlock {
+        true: {
+          packagelock { "Percona-XtraDB-Cluster-garbd-${_percona_major_version}-${version_server}": }
+          packagelock { "Percona-XtraDB-Cluster-shared-compat-${_percona_major_version}-${version_server}": }
+        }
+        false: {
+          packagelock { "Percona-XtraDB-Cluster-garbd-${_percona_major_version}-${version_server}": ensure => absent }
+          packagelock { "Percona-XtraDB-Cluster-shared-compat-${_percona_major_version}-${version_server}": ensure => absent }
+        }
+        default: { fail('Class[Percona::Cluster::Package]: parameter versionlock must be true or false') }
+      }
     }
   }
 
