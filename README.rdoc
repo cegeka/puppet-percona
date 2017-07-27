@@ -1,6 +1,6 @@
 = puppet-percona module
 
-{<img src='https://codex.cegeka.be/jenkins/job/puppet-percona/badge/icon' />}[https://codex.cegeka.be/jenkins/job/puppet-percona/]
+{<img src='https://jenkins-iac.cegeka.be/job/puppet-percona/badge/icon' />}[https://jenkins-iac.cegeka.be/job/puppet-percona/]
 
 This is the percona module.
 
