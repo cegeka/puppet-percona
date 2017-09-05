@@ -12,15 +12,10 @@ class percona::server::package(
       ensure => $version_server;
   }
 
-  case $versionlock {
-    true: {
-      packagelock { "Percona-Server-server-${_percona_major_version}": }
-    }
-    false: {
-      packagelock { "Percona-Server-server-${_percona_major_version}": ensure => absent }
-    }
-    default: { fail('Class[Percona::Server::Package]: parameter versionlock must be true or false')}
+  if $versionlock {
+    packagelock { "Percona-Server-server-${_percona_major_version}": }
+  } else {
+    packagelock { "Percona-Server-server-${_percona_major_version}": ensure => absent }
   }
-
 
 }
