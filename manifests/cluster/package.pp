@@ -56,7 +56,6 @@ class percona::cluster::package (
     -> Package["Percona-XtraDB-Cluster-shared-${_percona_major_version}"]
     -> Service['postfix']
     -> Package["Percona-XtraDB-Cluster-client-${_percona_major_version}"]
-    -> Package["Percona-XtraDB-Cluster-test-${_percona_major_version}"]
     -> Package[$xtrabackup_name]
     -> Package["${xtrabackup_name}-debuginfo"]
     -> Package["Percona-XtraDB-Cluster-server-${_percona_major_version}"]
@@ -91,7 +90,6 @@ class percona::cluster::package (
       -> Package[$server_shared_compat_name]
       -> Service['postfix']
       -> Package["Percona-XtraDB-Cluster-client-${_percona_major_version}"]
-      -> Package["Percona-XtraDB-Cluster-test-${_percona_major_version}"]
       -> Package[$xtrabackup_name]
       -> Package["${xtrabackup_name}-debuginfo"]
       -> Package["Percona-XtraDB-Cluster-server-${_percona_major_version}"]
@@ -123,7 +121,6 @@ class percona::cluster::package (
       -> Package["Percona-XtraDB-Cluster-shared-compat-${_percona_major_version}"]
       -> Service['postfix']
       -> Package["Percona-XtraDB-Cluster-client-${_percona_major_version}"]
-      -> Package["Percona-XtraDB-Cluster-test-${_percona_major_version}"]
       -> Package[$xtrabackup_name]
       -> Package["${xtrabackup_name}-debuginfo"]
       -> Package["Percona-XtraDB-Cluster-server-${_percona_major_version}"]
@@ -151,8 +148,6 @@ class percona::cluster::package (
       ensure => $version_server;
     "Percona-XtraDB-Cluster-shared-${_percona_major_version}" :
       ensure => $version_server;
-    "Percona-XtraDB-Cluster-test-${_percona_major_version}" :
-      ensure => $version_server;
     "Percona-XtraDB-Cluster-${_percona_major_version}-debuginfo" :
       ensure => $version_server;
     $xtrabackup_name :
@@ -166,7 +161,6 @@ class percona::cluster::package (
     packagelock { "Percona-XtraDB-Cluster-client-${_percona_major_version}-${version_server}": }
     packagelock { "Percona-XtraDB-Cluster-${_percona_major_version}-debuginfo-${version_server}": }
     packagelock { "Percona-XtraDB-Cluster-shared-${_percona_major_version}-${version_server}": }
-    packagelock { "Percona-XtraDB-Cluster-test-${_percona_major_version}-${version_server}": }
     packagelock { "${xtrabackup_name}-${version_xtrabackup}": }
     packagelock { "${xtrabackup_name}-debuginfo-${version_xtrabackup}": }
   } else {
@@ -174,7 +168,6 @@ class percona::cluster::package (
     packagelock { "Percona-XtraDB-Cluster-client-${_percona_major_version}-${version_server}": ensure => absent }
     packagelock { "Percona-XtraDB-Cluster-${_percona_major_version}-debuginfo-${version_server}": ensure => absent }
     packagelock { "Percona-XtraDB-Cluster-shared-${_percona_major_version}-${version_server}": ensure => absent }
-    packagelock { "Percona-XtraDB-Cluster-test-${_percona_major_version}-${version_server}": ensure => absent }
     packagelock { "${xtrabackup_name}-${version_xtrabackup}": ensure => absent }
     packagelock { "${xtrabackup_name}-debuginfo-${version_xtrabackup}": ensure => absent }
   }
