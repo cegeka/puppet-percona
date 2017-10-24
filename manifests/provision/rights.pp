@@ -16,7 +16,7 @@
 #- *$database*: the target database
 #- *$user*: the target user
 #- *$password*: user's password
-#- *$secret_id*: the ID for PIM
+#- *$secretid*: the ID for PIM
 #- *$host*: target host, default to "localhost"
 #- *$priv*: target privileges, defaults to "all" (values are the fieldnames from mysql.db table).
 
@@ -24,7 +24,7 @@ define percona::provision::rights(
   $database,
   $user,
   $password=undef,
-  $secret_id=undef,
+  $secretid=undef,
   $host='localhost',
   $ensure='present',
   $priv='all',
@@ -41,12 +41,12 @@ define percona::provision::rights(
     include percona::provision::service_cluster
     $real_service = "${::percona::provision::service_cluster::myservice}"
   }
-    if $secret_id == undef and $password == undef {
-      fail('You must privide a password or a secret_id to ::mysql::rights')
+    if $secretid == undef and $password == undef {
+      fail('You must privide a password or a secretid to ::mysql::rights')
     }
 
-    if $secret_id != undef {
-      $mysql_password = getsecret($secret_id, 'Password')
+    if $secretid != undef {
+      $mysql_password = getsecret($secretid, 'Password')
     } else {
       $mysql_password = $password
     }

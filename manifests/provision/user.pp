@@ -14,12 +14,12 @@
 #- *$ensure": defaults to present
 #- *$user*: the target user
 #- *$password*: user's password
-#- *$secret_id*: the ID for PIM
+#- *$secretid*: the ID for PIM
 
 define percona::provision::user(
   $user='root',
   $password=undef,
-  $secret_id=undef,
+  $secretid=undef,
   $host='localhost',
   $ensure='present',
   $type='server'
@@ -36,12 +36,12 @@ define percona::provision::user(
   }
 
   if $::mysql_exists {
-    if $secret_id == undef and $password == undef {
-      fail('You must privide a password or a secret_id to ::mysql::rights')
+    if $secretid == undef and $password == undef {
+      fail('You must privide a password or a secretid to ::mysql::rights')
     }
 
-    if $secret_id != undef {
-      $mysql_password = getsecret($secret_id, 'Password')
+    if $secretid != undef {
+      $mysql_password = getsecret($secretid, 'Password')
     } else {
       $mysql_password = $password
     }
