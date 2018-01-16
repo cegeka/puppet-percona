@@ -70,7 +70,7 @@ class percona::cluster::package (
     }
   }
   else {
-    if $::operatingsystemmajrelease < 7 {
+    if (versioncmp($::operatingsystemmajrelease, '7') < 0) {
       package {
         "Percona-XtraDB-Cluster-garbd-${_percona_major_version}" :
           ensure => $version_server;
