@@ -64,4 +64,11 @@ class percona::cluster (
   }
 
   Class['percona::cluster::package'] -> Class['percona::cluster::config']
+  service { 'mysql':
+    ensure     => running,
+    enable     => true,
+    hasrestart => true,
+    hasstatus  => true,
+    require    => [ Class[Percona::Cluster::Package], Class[Percona::Cluster::Config] ],
+  }
 }

@@ -27,4 +27,11 @@ class percona::server (
 
   Class['percona::server::package'] -> Class['percona::server::config']
 
+  service { 'mysql':
+    ensure     => running,
+    enable     => true,
+    hasrestart => true,
+    hasstatus  => true,
+    require    => [ Class[Percona::Server::Package], Class[Percona::Server::Config] ],
+  }
 }

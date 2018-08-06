@@ -32,15 +32,7 @@ define percona::provision::rights(
 ) {
 
   if $::mysql_exists {
-  if $type == 'server' {
-    include percona::provision::service
-    $real_service = "${::percona::provision::service::myservice}"
-  }
-  else
-  {
-    include percona::provision::service_cluster
-    $real_service = "${::percona::provision::service_cluster::myservice}"
-  }
+
     if $secretid == undef and $password == undef {
       fail('You must privide a password or a secretid to ::mysql::rights')
     }
@@ -55,14 +47,14 @@ define percona::provision::rights(
       ensure        => $ensure,
       password_hash => mysql_password($mysql_password),
       provider      => 'mysql',
-      require       => Service["${real_service}"]
+      require       => Service["mysql"]
     })
 
     if $ensure == 'present' {
       mysql_grant { "${user}@${host}/${database}":
         privileges => $priv,
         provider   => 'mysql',
-        require    => [ Percona_user["${user}@${host}"], Service["${real_service}"] ]
+        require    => [ Percona_user["${user}@${host}"], Service["mysql"] ]
       }
     }
 
