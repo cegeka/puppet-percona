@@ -44,11 +44,6 @@ describe 'percona' do
           cluster_address          => '127.0.0.1',
         }
 
-        service { 'mysql' :
-          ensure     => 'running',
-          enable     => true,
-          require    => File['/etc/my.cnf'],
-        }
         service { 'postfix':
           ensure    => running,
           hasstatus => true,
