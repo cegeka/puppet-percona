@@ -27,7 +27,8 @@ describe 'percona' do
 
         class { 'percona::toolkit':
           version     => $toolkit_version,
-          versionlock => true
+          versionlock => true,
+          require     => Yum::Repo['percona'],
         }
 
         class { 'percona::cluster':
@@ -42,6 +43,7 @@ describe 'percona' do
           cluster_name             => 'test-cluster',
           sst_method               => 'xtrabackup',
           cluster_address          => '127.0.0.1',
+          require                  => Yum::Repo['percona'],
         }
 
         service { 'postfix':
@@ -52,6 +54,7 @@ describe 'percona' do
         package { ['net-snmp', 'postfix'] :
           ensure  => present,
         }
+
       EOS
 
       # Run it twice and test for idempotency
