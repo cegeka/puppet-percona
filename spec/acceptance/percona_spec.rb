@@ -8,9 +8,11 @@ describe 'percona' do
         include stdlib
         include stdlib::stages
         include profile::package_management
+        include profile::iac::repository_management
   
         class { 'cegekarepos':
-          require => Class['::profile::iac::repository_management'] }
+          require => Class['profile::iac::repository_management'] 
+        }
 
         Yum::Repo <| title == 'epel' |>
         Yum::Repo <| title == 'percona' |>
