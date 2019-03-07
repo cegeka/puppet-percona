@@ -43,7 +43,7 @@ describe 'percona' do
           cluster_name             => 'test-cluster',
           sst_method               => 'xtrabackup',
           cluster_address          => '127.0.0.1',
-          require                  => Yum::Repo['percona']
+          require                  => Class['percona::toolkit']
         }
 
         service { 'postfix':
