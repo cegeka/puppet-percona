@@ -8,8 +8,9 @@ describe 'percona' do
         include stdlib
         include stdlib::stages
         include profile::package_management
+        include cegekarepos
 
-        class { 'cegekarepos' : stage => 'setup_repo' }
+#       class { 'cegekarepos' : stage => 'setup_repo' }
 
         Yum::Repo <| title == 'epel' |>
         Yum::Repo <| title == 'percona' |>
@@ -28,7 +29,7 @@ describe 'percona' do
         class { 'percona::toolkit':
           version     => $toolkit_version,
           versionlock => true,
-          require     => Yum::Repo['percona'],
+          require     => Yum::Repo['percona']
         }
 
         class { 'percona::cluster':
@@ -43,7 +44,7 @@ describe 'percona' do
           cluster_name             => 'test-cluster',
           sst_method               => 'xtrabackup',
           cluster_address          => '127.0.0.1',
-          require                  => Yum::Repo['percona'],
+          require                  => Yum::Repo['percona']
         }
 
         service { 'postfix':
