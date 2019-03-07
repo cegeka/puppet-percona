@@ -10,7 +10,7 @@ describe 'percona' do
         include profile::package_management
         include cegekarepos
 
-#       class { 'cegekarepos' : stage => 'setup_repo' }
+       class { 'cegekarepos' : stage => 'setup_repo' }
 
         Yum::Repo <| title == 'epel' |>
         Yum::Repo <| title == 'percona' |>
