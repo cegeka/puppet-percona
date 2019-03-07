@@ -28,7 +28,7 @@ describe 'percona' do
         class { 'percona::toolkit':
           version     => $toolkit_version,
           versionlock => true,
-          require     => Yum::Repo['percona'],
+          require     => Yum::Repo[percona],
         }
 
         class { 'percona::cluster':
@@ -43,7 +43,7 @@ describe 'percona' do
           cluster_name             => 'test-cluster',
           sst_method               => 'xtrabackup',
           cluster_address          => '127.0.0.1',
-          require                  => Yum::Repo['percona'],
+          require                  => Yum::Repo[percona],
         }
 
         service { 'postfix':
