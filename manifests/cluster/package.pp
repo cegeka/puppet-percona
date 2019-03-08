@@ -1,3 +1,7 @@
+# Class: percona::cluster::package
+#
+# Usage: this class should not be called directly
+#
 class percona::cluster::package (
   $version_galera     = undef,
   $version_server     = undef,

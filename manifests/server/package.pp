@@ -1,3 +1,7 @@
+# Class: percona::server::package
+#
+# Usage: this class should not be called directly
+#
 class percona::server::package(
   $version_server=undef,
   $versionlock=false
