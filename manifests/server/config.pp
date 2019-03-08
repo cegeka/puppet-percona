@@ -1,3 +1,7 @@
+# Class: percona::server::config
+#
+# Usage: this class should not be called directly
+#
 class percona::server::config (
   $socket_cnf         ='/var/lib/mysql/mysql.sock',
   $data_dir           ='/data/mysql',
@@ -18,21 +22,45 @@ class percona::server::config (
     group   => root,
     mode    => '0644',
     content => template("${module_name}/server/my.cnf.erb"),
-    replace => $replace_mycnf
+    replace => $replace_mycnf,
+    notify  => Service['mysql']
+  }
+  if $::selinux {
+    file_line {
+      'selinux_context_mysql_datadir':
+        path => '/etc/selinux/targeted/contexts/files/file_contexts.local',
+        line => "${data_dir}(/.*)? system_u:object_r:mysqld_db_t:s0";
+      'selinux_context_mysql_tmpdir':
+        path => '/etc/selinux/targeted/contexts/files/file_contexts.local',
+        line => "${tmp_dir}(/.*)? system_u:object_r:mysqld_db_t:s0"
+    }
+    file {
+      $data_dir:
+        ensure  => directory,
+        owner   => 'mysql',
+        group   => 'mysql',
+        seltype => 'mysqld_db_t',
+        require => [ File_line['selinux_context_mysql_datadir'] ];
+      $tmp_dir:
+        ensure  => directory,
+        owner   => 'mysql',
+        group   => 'mysql',
+        seltype => 'mysqld_db_t',
+        require => [ File[$data_dir], File_line['selinux_context_mysql_tmpdir'] ];
+    }
+  } else {
+    file {
+      $data_dir:
+        ensure => directory,
+        owner  => 'mysql',
+        group  => 'mysql';
+      $tmp_dir:
+        ensure => directory,
+        owner  => 'mysql',
+        group  => 'mysql';
+    }
   }
 
-  file { $data_dir:
-    ensure => directory,
-    owner  => 'mysql',
-    group  => 'mysql'
-  }
-
-  file { $tmp_dir:
-    ensure  => directory,
-    owner   => 'mysql',
-    group   => 'mysql',
-    require => File[$data_dir]
-  }
   file { '/root/.my.cnf':
     ensure  => present,
     owner   => root,
