@@ -30,25 +30,36 @@ class percona::cluster::config(
     notify  => Service['mysql']
   }
 
-  file_line { 'selinux_context_mysql_datadir':
-    path => '/etc/selinux/targeted/contexts/files/file_contexts.local',
-    line => "${data_dir}(/.*)? system_u:object_r:mysqld_db_t:s0"
-  }
-
-  file { $data_dir:
-    ensure  => directory,
-    owner   => 'mysql',
-    group   => 'mysql',
-    seltype => 'mysqld_db_t',
-    require => [ File_line['selinux_context_mysql_datadir'] ]
-  }
-
-  file { $tmp_dir:
-    ensure  => directory,
-    owner   => 'mysql',
-    group   => 'mysql',
-    seltype => 'mysqld_db_t',
-    require => [ File_line['selinux_context_mysql_datadir'] ]
+  if $::selinux {
+    file_line { 'selinux_context_mysql_datadir':
+      path => '/etc/selinux/targeted/contexts/files/file_contexts.local',
+      line => "${data_dir}(/.*)? system_u:object_r:mysqld_db_t:s0"
+    }
+    file {
+      $data_dir:
+        ensure  => directory,
+        owner   => 'mysql',
+        group   => 'mysql',
+        seltype => 'mysqld_db_t',
+        require => [ File_line['selinux_context_mysql_datadir'] ];
+      $tmp_dir:
+        ensure  => directory,
+        owner   => 'mysql',
+        group   => 'mysql',
+        seltype => 'mysqld_db_t',
+        require => [ File_line['selinux_context_mysql_datadir'] ]
+    }
+  } else {
+    file {
+      $data_dir:
+        ensure => directory,
+        owner  => 'mysql',
+        group  => 'mysql';
+      $tmp_dir:
+        ensure => directory,
+        owner  => 'mysql',
+        group  => 'mysql';
+    }
   }
 
   file { '/root/.my.cnf':
