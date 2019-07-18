@@ -69,6 +69,6 @@ class percona::cluster (
     enable     => true,
     hasrestart => true,
     hasstatus  => true,
-    require    => [ Class[Percona::Cluster::Package], Class[Percona::Cluster::Config] ],
+    require    => [ Class['percona::cluster::package'], Class['percona::cluster::config'] ],
   }
 }

@@ -32,6 +32,6 @@ class percona::server (
     enable     => true,
     hasrestart => true,
     hasstatus  => true,
-    require    => [ Class[Percona::Server::Package], Class[Percona::Server::Config] ],
+    require    => [ Class['percona::server::package'], Class['percona::server::config'] ],
   }
 }

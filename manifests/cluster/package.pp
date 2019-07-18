@@ -15,8 +15,10 @@ class percona::cluster::package (
   $_percona_major_version = regsubst($percona_major_version, '\.', '', 'G')
   debug("Percona major version = ${percona_major_version}")
 
-  $galera_major_version = regsubst($version_galera, '^(\d)\.(\d*)-(.*)','\1')
-  $_galera_major_version = regsubst($galera_major_version, '\.', '', 'G')
+  if $version_galera != undef {
+    $galera_major_version = regsubst($version_galera, '^(\d)\.(\d*)-(.*)','\1')
+    $_galera_major_version = regsubst($galera_major_version, '\.', '', 'G')
+  }
 
   debug("Galera major version = ${galera_major_version}")
 
