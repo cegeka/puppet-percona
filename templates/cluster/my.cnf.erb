@@ -23,7 +23,7 @@ wsrep_cluster_name=<%= @cluster_name %>
 wsrep_provider=/usr/lib64/libgalera_smm.so
 wsrep_slave_threads=8
 wsrep_sst_method=<%= @sst_method %>
-<% if @sst_method == 'xtrabackup' then -%>
+<% if @sst_method == 'xtrabackup' or @sst_method == 'xtrabackup-v2' then -%>
 wsrep_sst_auth="root:"
 <% end -%>
 wsrep_causal_reads=1
