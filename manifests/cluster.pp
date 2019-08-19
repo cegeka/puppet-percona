@@ -13,7 +13,12 @@ class percona::cluster (
   $replace_mycnf             = false,
   $replace_root_mycnf        = false,
   $socket_cnf                = '/var/lib/mysql/mysql.sock',
-  $server_shared_compat_name = 'Percona-Server-shared-compat'
+  $server_shared_compat_name = 'Percona-Server-shared-compat',
+  $ssl                       = false,
+  $ssl_autogen               = true,
+  $ssl_ca                    = undef,
+  $ssl_cert                  = undef,
+  $ssl_key                   = undef,
 ) {
 
   if ! $version_server {
@@ -60,7 +65,11 @@ class percona::cluster (
     sst_method         => $sst_method,
     replace_mycnf      => $replace_mycnf,
     socket_cnf         => $socket_cnf,
-    replace_root_mycnf => $replace_root_mycnf
+    replace_root_mycnf => $replace_root_mycnf,
+    ssl                => $ssl,
+    ssl_ca             => $ssl_ca,
+    ssl_cert           => $ssl_cert,
+    ssl_key            => $ssl_key
   }
 
   Class['percona::cluster::package'] -> Class['percona::cluster::config']

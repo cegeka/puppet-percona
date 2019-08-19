@@ -11,7 +11,12 @@ class percona::cluster::config(
   $cluster_name       = undef,
   $sst_method         = 'rsync',
   $replace_mycnf      = false,
-  $replace_root_mycnf = false
+  $replace_root_mycnf = false,
+  $ssl                = false,
+  $ssl_autogen        = true,
+  $ssl_ca             = undef,
+  $ssl_key            = undef,
+  $ssl_cert           = undef
 ) {
   if check_file('/root/.my.cnf','password=..*') {
     $real_replace_root_mycnf=false
@@ -55,4 +60,13 @@ class percona::cluster::config(
     content => template("${module_name}/cluster/root_my.cnf.erb"),
     replace => $real_replace_root_mycnf
   }
+
+  if $ssl {
+    class { '::percona::cluster::ssl':
+      ssl_ca   => $ssl_ca,
+      ssl_key  => $ssl_key,
+      ssl_cert => $ssl_cert,
+    }
+  }
+
 }

@@ -1,0 +1,7 @@
+[mysqld]
+pxc-encrypt-cluster-traffic=ON
+<% if @ssl_autogen %>
+ssl-ca=<%= @ssl_ca %>
+ssl-key=<%= @ssl_key %>
+ssl-cert=<%= @ssl_cert %>
+<% end %>

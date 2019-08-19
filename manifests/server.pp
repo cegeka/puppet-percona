@@ -6,6 +6,11 @@ class percona::server (
   $tmp_dir             = '/data/mysql_tmp',
   $replace_mycnf       = false,
   $replace_root_mycnf  = false,
+  $ssl                 = false,
+  $ssl_autogen         = true,
+  $ssl_ca              = undef,
+  $ssl_cert            = undef,
+  $ssl_key             = undef,
 ) {
 
   if ! $version_server {
@@ -22,7 +27,11 @@ class percona::server (
     tmp_dir            => $tmp_dir,
     replace_mycnf      => $replace_mycnf,
     replace_root_mycnf => $replace_root_mycnf,
-    socket_cnf         => $socket_cnf
+    socket_cnf         => $socket_cnf,
+    ssl                => $ssl,
+    ssl_ca             => $ssl_ca,
+    ssl_cert           => $ssl_cert,
+    ssl_key            => $ssl_key
   }
 
   Class['percona::server::package'] -> Class['percona::server::config']
