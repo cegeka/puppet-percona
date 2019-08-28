@@ -14,6 +14,8 @@ class percona::cluster (
   $replace_root_mycnf        = false,
   $socket_cnf                = '/var/lib/mysql/mysql.sock',
   $server_shared_compat_name = 'Percona-Server-shared-compat',
+  $service_ensure            = 'running',
+  $service_enable            = true,
   $ssl                       = false,
   $ssl_autogen               = true,
   $ssl_ca                    = undef,
@@ -74,8 +76,8 @@ class percona::cluster (
 
   Class['percona::cluster::package'] -> Class['percona::cluster::config']
   service { 'mysql':
-    ensure     => running,
-    enable     => true,
+    ensure     => $service_ensure,
+    enable     => $service_enable,
     hasrestart => true,
     hasstatus  => true,
     require    => [ Class['percona::cluster::package'], Class['percona::cluster::config'] ],
