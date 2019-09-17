@@ -17,10 +17,10 @@ class percona::xtrabackup(
 
   case $versionlock {
     true: {
-      packagelock { 'percona-xtrabackup': }
+      yum::versionlock { "0:percona-xtrabackup-${version}.*": }
     }
     false: {
-      packagelock { 'percona-xtrabackup': ensure => absent }
+      yum::versionlock { "0:percona-xtrabackup-${version}.*": ensure => absent }
     }
     default: { fail('Class[Percona::Xtrabackup]: parameter versionlock must be true or false')}
   }

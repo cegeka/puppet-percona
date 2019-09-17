@@ -30,9 +30,9 @@ class percona::cluster::arbitrator (
   }
 
   if $versionlock {
-    packagelock { "${garb_packagename}-${garb_version}": }
+    yum::versionlock { "0:${garb_packagename}-${garb_version}.*": }
   } else {
-    packagelock { "${garb_packagename}-${garb_version}": ensure => absent }
+    yum::versionlock { "0:${garb_packagename}-${garb_version}.*": ensure => absent }
   }
 
 }

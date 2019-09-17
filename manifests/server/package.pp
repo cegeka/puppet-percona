@@ -17,9 +17,9 @@ class percona::server::package(
   }
 
   if $versionlock {
-    packagelock { "Percona-Server-server-${_percona_major_version}": }
+    yum::versionlock { "0:Percona-Server-server-${_percona_major_version}-${version_server}.*": }
   } else {
-    packagelock { "Percona-Server-server-${_percona_major_version}": ensure => absent }
+    yum::versionlock { "0:Percona-Server-server-${_percona_major_version}-${version_server}.*": ensure => absent }
   }
 
 }
