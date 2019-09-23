@@ -122,7 +122,7 @@ class percona::cluster::package (
 
       case $versionlock {
         true: {
-          yum::versionlock { "0:Percona-XtraDB-Cluster-garbd-${_percona_major_version}-${version_server}.*:": }
+          yum::versionlock { "0:Percona-XtraDB-Cluster-garbd-${_percona_major_version}-${version_server}.*": }
           yum::versionlock { "0:Percona-XtraDB-Cluster-shared-compat-${_percona_major_version}-${version_server}.*": }
         }
         false: {
