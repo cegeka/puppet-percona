@@ -1,6 +1,8 @@
 class percona::server (
   $socket_cnf          = '/var/lib/mysql/mysql.sock',
   $version_server      = undef,
+  $xtrabackup_name     = undef,
+  $version_xtrabackup  = 'present',
   $versionlock         = false,
   $data_dir            = '/data/mysql',
   $tmp_dir             = '/data/mysql_tmp',
@@ -18,8 +20,9 @@ class percona::server (
   }
 
   class { 'percona::server::package':
-    version_server => $version_server,
-    versionlock    => $versionlock
+    version_server  => $version_server,
+    versionlock     => $versionlock,
+    xtrabackup_name => $xtrabackup_name
   }
 
   class { 'percona::server::config':

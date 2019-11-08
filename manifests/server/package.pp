@@ -4,6 +4,8 @@
 #
 class percona::server::package(
   $version_server=undef,
+  $xtrabackup_name=undef,
+  $version_xtrabackup='present',
   $versionlock=false
 ) {
 
@@ -14,6 +16,8 @@ class percona::server::package(
   package {
     "Percona-Server-server-${_percona_major_version}" :
       ensure => $version_server;
+    $xtrabackup_name :
+      ensure => $version_xtrabackup;
   }
 
   if $versionlock {
