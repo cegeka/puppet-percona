@@ -9,9 +9,14 @@ class percona::toolkit($version=undef, $versionlock=false) {
   }
 
   if $versionlock {
-    yum::versionlock { "0:percona-toolkit-${version}.*": }
+    $versionlock_ensure = present
   } else {
-    yum::versionlock { "0:percona-toolkit-${version}.*": ensure => absent }
+    $versionlock_ensure = absent
+  }
+
+  case $operatingsystemmajrelease {
+    '8': { dnf::versionlock { "0:percona-toolkit-${version}.*": ensure => $versionlock_ensure } }
+    default: { yum::versionlock { "0:percona-toolkit-${version}.*": ensure => $versionlock_ensure } }
   }
 
 }
