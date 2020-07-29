@@ -11,39 +11,31 @@ class percona::cluster::package (
   $server_shared_compat_name = 'Percona-Server-shared-compat'
 ) {
 
-  $percona_major_version = regsubst($version_server, '^(\d\.\d)\.(\d+)-(.*)','\1')
-  $_percona_major_version = regsubst($percona_major_version, '\.', '', 'G')
-  notice("Percona major version = ${percona_major_version}")
+  $percona_major_version        = regsubst($version_server, '^(\d\.\d)\.(\d+)-(.*)','\1')
+  $_percona_major_version       = regsubst($percona_major_version, '\.', '', 'G')
+  $percona_package_version      = regsubst($version_server, '^(.*?)-(.*)','\1')
+  $percona_package_release      = regsubst($version_server, '^(.*?)-(.*)','\2')
+  $number_percona_major_version = 0 + $_percona_major_version
 
-  $percona_package_version = regsubst($version_server, '^(.*?)-(.*)','\1')
-  $percona_package_release = regsubst($version_server, '^(.*?)-(.*)','\2')
-  notice("Percona package version = ${percona_package_version}")
-  notice("Percona package release = ${percona_package_release}")
-
-  if $version_galera != undef {
-    $galera_major_version = regsubst($version_galera, '^(\d)\.(\d*)-(.*)','\1')
-    $_galera_major_version = regsubst($galera_major_version, '\.', '', 'G')
-    $galera_package_version = regsubst($version_galera, '^(.*?)-(.*)','\1')
-    $galera_package_release = regsubst($galera_major_version, '^(.*?)-(.*)','\2')
-    notice("Galera major version   = ${galera_major_version}")
-    notice("Galera package version = ${galera_package_version}")
-    notice("Galera package release = ${galera_package_release}")
+  if $version_galera == undef and $number_percona_major_version < 57 {
+      fail("Percona::Cluster::Package[${version_galera}]: must be given if version_server < 57")
   }
 
-
-  case $versionlock {
-    true:    { $percona_versionlock = 'present' }
-    false:   { $percona_versionlock = 'absent' }
-    default: { fail('Class[Percona::Cluster::Package]: parameter versionlock must be true or false') }
+  if $version_galera != undef {
+    $galera_major_version   = regsubst($version_galera, '^(\d)\.(\d*)-(.*)','\1')
+    $_galera_major_version  = regsubst($galera_major_version, '\.', '', 'G')
+    $galera_package_version = regsubst($version_galera, '^(.*?)-(.*)','\1')
+    $galera_package_release = regsubst($galera_major_version, '^(.*?)-(.*)','\2')
   }
 
   if $xtrabackup_name == undef  {
     fail("percona::Cluster::Package[${xtrabackup_name}]: must be given")
   }
 
-  $number_percona_major_version = 0 + $_percona_major_version
-  if $version_galera == undef and $number_percona_major_version < 57 {
-      fail("Percona::Cluster::Package[${version_galera}]: must be given if version_server < 57")
+  case $versionlock {
+    true:    { $percona_versionlock = 'present' }
+    false:   { $percona_versionlock = 'absent' }
+    default: { fail('Class[Percona::Cluster::Package]: parameter versionlock must be true or false') }
   }
 
   exec { 'remove-Percona-Server-shared-55':
@@ -66,6 +58,7 @@ class percona::cluster::package (
     onlyif  => '/bin/rpm -qi mariadb-connector-c-config',
     require => [ Package['net-snmp'], Package['postfix']]
   }
+
   if $number_percona_major_version < 57 {
     package {
       "Percona-XtraDB-Cluster-galera-${_galera_major_version}" :
@@ -84,9 +77,7 @@ class percona::cluster::package (
     -> Package["Percona-XtraDB-Cluster-server-${_percona_major_version}"]
     -> Package["Percona-XtraDB-Cluster-garbd-${_galera_major_version}"]
 
-    $percona_components = ['garbd','galera']
-
-    $percona_components.each |String $percona_component| {
+    ['garbd','galera'].each |String $percona_component| {
       yum::versionlock { "Percona-XtraDB-Cluster-${percona_component}-${_galera_major_version}":
         ensure  => "${percona_versionlock}",
         version => "${galera_package_version}",
@@ -97,7 +88,8 @@ class percona::cluster::package (
     }
   }
   else {
-    if Integer($::operatingsystemmajrelease) == 8 or Integer($::operatingsystemmajrelease) == 7 {
+    # if rhel version is lower than 7
+    if Integer($::operatingsystemmajrelease) < 7 {
       package {
         "Percona-XtraDB-Cluster-garbd-${_percona_major_version}" :
           ensure => $version_server;
@@ -123,6 +115,8 @@ class percona::cluster::package (
         arch    => 'x86_64',
       }
     }
+    # else, rhel version is 7 or higher:
+    # shared-compat package name contains percona major version
     else {
       package {
         "Percona-XtraDB-Cluster-garbd-${_percona_major_version}" :
@@ -141,9 +135,7 @@ class percona::cluster::package (
       -> Package["Percona-XtraDB-Cluster-server-${_percona_major_version}"]
       -> Package["Percona-XtraDB-Cluster-garbd-${_percona_major_version}"]
 
-      $percona_components = ['garbd','shared-compat']
-
-      $percona_components.each |String $percona_component| {
+      ['garbd','shared-compat'].each |String $percona_component| {
         yum::versionlock { "Percona-XtraDB-Cluster-${percona_component}-${_percona_major_version}":
           ensure  => "${percona_versionlock}",
           version => "${percona_package_version}",
@@ -166,9 +158,7 @@ class percona::cluster::package (
       ensure => $version_xtrabackup;
   }
 
-  $percona_components = ['server','client','shared']
-
-  $percona_components.each |String $percona_component| {
+  ['server','client','shared'].each |String $percona_component| {
     yum::versionlock { "Percona-XtraDB-Cluster-${percona_component}-${_percona_major_version}":
       ensure  => "${percona_versionlock}",
       version => "${percona_package_version}",
