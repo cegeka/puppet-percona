@@ -28,7 +28,8 @@ define percona::provision::rights(
   $host='localhost',
   $ensure='present',
   $priv='all',
-  $type='server'
+  $type='server',
+  $global=false
 ) {
 
   if $::mysql_exists {
@@ -51,7 +52,8 @@ define percona::provision::rights(
     })
 
     if $ensure == 'present' {
-      mysql_grant { "${user}@${host}/${database}":
+      if $global { $real_type = '' } else { $real_type = "/${database}"}
+      mysql_grant { "${user}@${host}${real_type}":
         privileges => $priv,
         provider   => 'mysql',
         require    => [ Percona_user["${user}@${host}"], Service["mysql"] ]
