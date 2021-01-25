@@ -33,7 +33,6 @@ class percona::cluster::arbitrator (
   $garb_package_release = regsubst($garb_version, '^(.*?)-(.*)','\2')
   $galera_major_version = regsubst($garb_packagename, '^(.*)-(.*)-(.*)-(.*)-(.*)','\5')
 
-
   if $versionlock {
     $versionlock_ensure = present
   } else {
