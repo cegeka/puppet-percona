@@ -29,10 +29,24 @@ class percona::cluster::arbitrator (
     require => [File['/etc/sysconfig/garb'],Package[$garb_packagename]]
   }
 
+  $garb_package_version = regsubst($garb_version, '^(.*?)-(.*)','\1')
+  $garb_package_release = regsubst($garb_version, '^(.*?)-(.*)','\2')
+  $galera_major_version = regsubst($garb_packagename, '^(.*)-(.*)-(.*)-(.*)-(.*)','\5')
+
+
   if $versionlock {
-    yum::versionlock { "0:${garb_packagename}-${garb_version}.*": }
+    $versionlock_ensure = present
   } else {
-    yum::versionlock { "0:${garb_packagename}-${garb_version}.*": ensure => absent }
+    $versionlock_ensure = absent
+  }
+
+# Percona-XtraDB-Cluster-garbd-57
+  yum::versionlock { "Percona-XtraDB-Cluster-garbd-${galera_major_version}":
+    ensure  => "${versionlock_ensure}",
+    version => "${garb_package_version}",
+    release => "${garb_package_release}",
+    epoch   => 0,
+    arch    => 'x86_64',
   }
 
 }
