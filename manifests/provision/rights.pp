@@ -33,36 +33,36 @@ define percona::provision::rights(
 ) {
 
   if $::mysql_exists {
+    case $ensure {
+      'present': {
+        if $secretid == undef and $password == undef {
+          fail('You must privide a password or a secretid to ::mysql::rights')
+        }
 
-    if $secretid == undef and $password == undef {
-      fail('You must privide a password or a secretid to ::mysql::rights')
-    }
+        if $secretid != undef {
+          $mysql_password = getsecret($secretid, 'Password')
+        } else {
+          $mysql_password = $password
+        }
 
-    if $secretid != undef {
-      $mysql_password = getsecret($secretid, 'Password')
-    } else {
-      $mysql_password = $password
-    }
+        ensure_resource('percona_user', "${user}@${host}", {
+          ensure        => $ensure,
+          password_hash => mysql_password($mysql_password),
+          provider      => 'mysql',
+          require       => Service["mysql"]
+        })
 
-    ensure_resource('percona_user', "${user}@${host}", {
-      ensure        => $ensure,
-      password_hash => mysql_password($mysql_password),
-      provider      => 'mysql',
-      require       => Service["mysql"]
-    })
-
-    if $ensure == 'present' {
-      if $global { $real_type = '' } else { $real_type = "/${database}"}
-      mysql_grant { "${user}@${host}${real_type}":
-        privileges => $priv,
-        provider   => 'mysql',
-        require    => [ Percona_user["${user}@${host}"], Service["mysql"] ]
+        if $global { $real_type = '' } else { $real_type = "/${database}"}
+          mysql_grant { "${user}@${host}${real_type}":
+            privileges => $priv,
+            provider   => 'mysql',
+            require    => [ Percona_user["${user}@${host}"], Service["mysql"] ]
+        }
       }
-    }
-
-    if $ensure == 'absent' {
-      percona_user { "${user}@${host}":
-        ensure => absent
+      'absent': {
+        percona_user { "${user}@${host}":
+          ensure => absent
+        }
       }
     }
   } else {
