@@ -8,6 +8,8 @@ class percona::server (
   $tmp_dir             = '/data/mysql_tmp',
   $replace_mycnf       = false,
   $replace_root_mycnf  = false,
+  $service_ensure      = 'running',
+  $service_enable      = true,
   $ssl                 = false,
   $ssl_autogen         = true,
   $ssl_ca              = undef,
@@ -39,9 +41,9 @@ class percona::server (
 
   Class['percona::server::package'] -> Class['percona::server::config']
 
-  service { 'mysql':
-    ensure     => running,
-    enable     => true,
+  service { 'mysqld':
+    ensure     => $service_ensure,
+    enable     => $service_enable,
     hasrestart => true,
     hasstatus  => true,
     require    => [ Class['percona::server::package'], Class['percona::server::config'] ],
