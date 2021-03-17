@@ -49,7 +49,7 @@ define percona::provision::rights(
           ensure        => $ensure,
           password_hash => mysql_password($mysql_password),
           provider      => 'mysql',
-          require       => Service["mysql"]
+          require       => Service['mysqld']
         })
 
         if $global { $real_type = '' } else { $real_type = "/${database}"}

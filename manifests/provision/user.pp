@@ -41,7 +41,7 @@ define percona::provision::user(
         ensure        => $ensure,
         password_hash => mysql_password($mysql_password),
         provider      => 'mysql',
-        require       => Service["mysql"]
+        require       => Service['mysqld']
       })
       augeas { '/root/.my.cnf':
         incl    => '/root/.my.cnf',
@@ -67,7 +67,7 @@ define percona::provision::user(
       ensure        => $ensure,
       password_hash => mysql_password($mysql_password),
       provider      => 'mysql',
-      require       => Service["mysql"]
+      require       => Service['mysqld']
     })
     }
 

@@ -32,7 +32,7 @@ class percona::cluster::config(
     mode    => '0644',
     content => template("${module_name}/cluster/my.cnf.erb"),
     replace => $replace_mycnf,
-    notify  => Service['mysql']
+    notify  => Service['mysqld']
   }
 
   if $::selinux {

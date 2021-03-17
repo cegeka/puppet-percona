@@ -75,7 +75,8 @@ class percona::cluster (
   }
 
   Class['percona::cluster::package'] -> Class['percona::cluster::config']
-  service { 'mysql':
+  service { 'mysqld':
+    name       => 'mysql',
     ensure     => $service_ensure,
     enable     => $service_enable,
     hasrestart => true,
