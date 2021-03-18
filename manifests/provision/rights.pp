@@ -56,7 +56,7 @@ define percona::provision::rights(
           mysql_grant { "${user}@${host}${real_type}":
             privileges => $priv,
             provider   => 'mysql',
-            require    => [ Percona_user["${user}@${host}"], Service["mysql"] ]
+            require    => [ Percona_user["${user}@${host}"], Service["mysqld"] ]
         }
       }
       'absent': {
