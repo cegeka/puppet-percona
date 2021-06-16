@@ -44,7 +44,6 @@ class percona::server (
     character_set       => $character_set
   }
 
-
   service { 'mysqld':
     ensure     => $service_ensure,
     enable     => $service_enable,

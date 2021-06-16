@@ -15,19 +15,18 @@ class percona::server::root (
   case $root_password_set {
     0: {
       $real_replace_root_mycnf = false
-      $real_root_password = undef
     }
     1,default: {
       # 1: no password is present in /root/.my.cnf
       # default: it's a clean install, proceed
       $real_replace_root_mycnf = $replace_root_mycnf
-      $real_root_password = getsecret($root_password,'Password')
     }
   }
 
-  if real_replace_root_mycnf {
+  if $real_replace_root_mycnf and $root_password {
+    $real_root_password = getsecret($root_password,'Password')
     $rm_pass_cmd = join([
-        "mysqladmin -u root --password=\$(sed -n 's/.* temporary password .*: \\(.*\\)/\\1/p' ${secret_file}) password '${real_root_password}'",
+        "mysqladmin -S ${socket_cnf} -u root --password=\$(sed -n 's/.* temporary password .*: \\(.*\\)/\\1/p' ${secret_file}) password '${real_root_password}'",
         "touch /root/.mysql_root_reset",
     ], ' && ')
 
