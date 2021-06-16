@@ -24,7 +24,7 @@ Puppet::Type.type(:percona_user).provide(:mysql) do
 
   def password_hash
     mysql_version = mysql(["-V"])
-    percona_version=%r{(Distrib|Ver?) (\d+\.\d+\.\d+)}.match(mysql_version)[2].gsub('.','')
+    percona_version=%r{(Distrib|Ver?) (\d+\.\d+)\.\d+}.match(mysql_version)[2].gsub('.','')
     if percona_version.to_i >= 57
       mysql([defaults_file, "mysql", "-NBe", "select authentication_string from mysql.user where CONCAT(user, '@', host) = '%s'" % @resource.value(:name)].compact).chomp
     else
