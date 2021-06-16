@@ -1,15 +1,35 @@
 [client]
 socket=<%= @socket_cnf %>
 protocol=socket
+<%- if @real_root_password -%>
+user=root
+password=<%= @real_root_password %>
+<%- end -%>
 [mysql]
 socket=<%= @socket_cnf %>
 protocol=socket
+<%- if @real_root_password -%>
+user=root
+password=<%= @real_root_password %>
+<%- end -%>
 [mysqladmin]
 socket=<%= @socket_cnf %>
 protocol=socket
+<%- if @real_root_password -%>
+user=root
+password=<%= @real_root_password %>
+<%- end -%>
 [mysqldump]
 socket=<%= @socket_cnf %>
 protocol=socket
+<%- if @real_root_password -%>
+user=root
+password=<%= @real_root_password %>
+<%- end -%>
 [mysqlshow]
 socket=<%= @socket_cnf %>
 protocol=socket
+<%- if @real_root_password -%>
+user=root
+password=<%= @real_root_password %>
+<%- end -%>

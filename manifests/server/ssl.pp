@@ -11,7 +11,7 @@ class percona::server::ssl (
 
   file { '/etc/my.cnf.d/ssl.cnf':
     ensure  => present,
-    content => template("${module_name}/cluster/ssl.cnf.erb")
+    content => template("${module_name}/server/ssl.cnf.erb")
   }
 
 }

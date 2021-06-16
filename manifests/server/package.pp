@@ -3,6 +3,7 @@
 # Usage: this class should not be called directly
 #
 class percona::server::package(
+  $package_name=undef,
   $version_server=undef,
   $xtrabackup_name=undef,
   $version_xtrabackup='present',
@@ -14,8 +15,14 @@ class percona::server::package(
   $percona_package_version = regsubst($version_server, '^(.*?)-(.*)','\1')
   $percona_package_release = regsubst($version_server, '^(.*?)-(.*)','\2')
 
+  if $package_name {
+    $real_package_name = $package_name
+  } else {
+    $real_package_name = "Percona-Server-server-${_percona_major_version}"
+  }
+
   package {
-    "Percona-Server-server-${_percona_major_version}" :
+    $real_package_name:
       ensure => $version_server;
     $xtrabackup_name :
       ensure => $version_xtrabackup;
@@ -27,7 +34,7 @@ class percona::server::package(
     $versionlock_ensure = absent
   }
 
-  yum::versionlock { "Percona-Server-server-${_percona_major_version}":
+  yum::versionlock { $real_package_name:
     ensure  => "${versionlock_ensure}",
     version => "${percona_package_version}",
     release => "${percona_package_release}",

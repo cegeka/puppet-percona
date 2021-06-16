@@ -8,18 +8,14 @@ class percona::server::config (
   $tmp_dir            ='/data/mysql_tmp',
   $replace_mycnf      = false,
   $replace_root_mycnf = false,
+  $secret_file        = undef,
   $ssl                = false,
   $ssl_autogen        = true,
   $ssl_ca             = undef,
   $ssl_key            = undef,
-  $ssl_cert           = undef
+  $ssl_cert           = undef,
+  $character_set      = 'utf8',
 ) {
-  if check_file('/root/.my.cnf','password=..*') {
-    $real_replace_root_mycnf=false
-  }
-  else {
-    $real_replace_root_mycnf=$replace_root_mycnf
-  }
 
   file { '/etc/my.cnf':
     ensure  => present,
@@ -64,15 +60,6 @@ class percona::server::config (
         owner  => 'mysql',
         group  => 'mysql';
     }
-  }
-
-  file { '/root/.my.cnf':
-    ensure  => present,
-    owner   => root,
-    group   => root,
-    mode    => '0644',
-    content => template("${module_name}/server/root_my.cnf.erb"),
-    replace => $real_replace_root_mycnf
   }
 
   if $ssl {

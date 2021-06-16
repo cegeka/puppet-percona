@@ -5,10 +5,13 @@ socket=<%= @socket_cnf %>
 
 default-storage-engine=InnoDB
 
-character_set_server=utf8
+character_set_server=<%= @character_set %>
 
 # Disabling symbolic-links is recommended to prevent assorted security risks
 symbolic-links=0
+
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
 
 [mysqld_safe]
 log-error=/var/log/mysqld.log
