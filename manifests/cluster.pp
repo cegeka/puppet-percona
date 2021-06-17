@@ -84,6 +84,7 @@ class percona::cluster (
   }
 
   class { '::percona::cluster::service':
+    server_id          => $server_id,
     service_ensure     => $service_ensure,
     service_enable     => $service_enable
   }
