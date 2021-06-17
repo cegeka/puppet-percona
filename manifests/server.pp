@@ -16,9 +16,9 @@ class percona::server (
   $ssl_ca              = undef,
   $ssl_cert            = undef,
   $ssl_key             = undef,
-  $character_set       = undef,
   $secret_file         = undef,
-  $root_password       = undef
+  $root_password       = undef,
+  $additional_config   = undef
 ) {
 
   if ! $version_server {
@@ -41,7 +41,7 @@ class percona::server (
     ssl_ca              => $ssl_ca,
     ssl_cert            => $ssl_cert,
     ssl_key             => $ssl_key,
-    character_set       => $character_set
+    additional_config   => $additional_config
   }
 
   service { 'mysqld':
