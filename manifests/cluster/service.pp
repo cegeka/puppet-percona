@@ -12,6 +12,7 @@ class percona::cluster::service (
     # Bootstrap first, then configure root password if required
     exec { 'bootstrap_galera_cluster':
       command  => 'systemctl start mysql@bootstrap && touch /root/.mysql_bootstrap',
+      # Also possible to nmap scan all the nodes in the cluster and check if one is already listening on port 3306/4567
       unless   => "netstat -tulpen | grep -q ':4567'",
       creates  => "/root/.mysql_bootstrap",
       before   => Service['mysqld'],
@@ -19,11 +20,11 @@ class percona::cluster::service (
       path     => '/usr/bin:/bin:/usr/local/bin:/usr/sbin:/sbin:/usr/local/sbin',
       require  => Class['percona::cluster::config'],
     }
+  }
 
-    service { 'mysql@bootstrap':
-      ensure => 'stopped',
-      before => Service['mysqld'],
-    }
+  service { 'mysql@bootstrap':
+    ensure => 'stopped',
+    before => Service['mysqld'],
   }
 
   service { 'mysqld':
