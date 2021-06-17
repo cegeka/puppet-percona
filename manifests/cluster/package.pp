@@ -3,6 +3,7 @@
 # Usage: this class should not be called directly
 #
 class percona::cluster::package (
+  $package_name       = undef,
   $version_galera     = undef,
   $version_server     = undef,
   $versionlock        = undef,
@@ -26,6 +27,10 @@ class percona::cluster::package (
     $_galera_major_version  = regsubst($galera_major_version, '\.', '', 'G')
     $galera_package_version = regsubst($version_galera, '^(.*?)-(.*)','\1')
     $galera_package_release = regsubst($galera_major_version, '^(.*?)-(.*)','\2')
+  }
+
+  if $package_name {
+    $real_package_name = $package_name
   }
 
   if $xtrabackup_name == undef  {
@@ -87,7 +92,7 @@ class percona::cluster::package (
       }
     }
   }
-  else {
+  if $number_percona_major_version >= 57 and $number_percona_major_version < 80 {
     case Integer($::operatingsystemmajrelease) {
       6: {
         package {
@@ -170,26 +175,39 @@ class percona::cluster::package (
       }
       default: {}
     }
+    package {
+      "Percona-XtraDB-Cluster-server-${_percona_major_version}" :
+        ensure => $version_server;
+      "Percona-XtraDB-Cluster-client-${_percona_major_version}" :
+        ensure => $version_server;
+      "Percona-XtraDB-Cluster-shared-${_percona_major_version}" :
+        ensure => $version_server;
+      $xtrabackup_name :
+        ensure => $version_xtrabackup;
+    }
+
+    ['server','client','shared'].each |String $percona_component| {
+      yum::versionlock { "Percona-XtraDB-Cluster-${percona_component}-${_percona_major_version}":
+        ensure  => "${percona_versionlock}",
+        version => "${percona_package_version}",
+        release => "${percona_package_release}",
+        epoch   => 0,
+        arch    => 'x86_64',
+      }
+    }
   }
 
-  package {
-    "Percona-XtraDB-Cluster-server-${_percona_major_version}" :
-      ensure => $version_server;
-    "Percona-XtraDB-Cluster-client-${_percona_major_version}" :
-      ensure => $version_server;
-    "Percona-XtraDB-Cluster-shared-${_percona_major_version}" :
-      ensure => $version_server;
-    $xtrabackup_name :
-      ensure => $version_xtrabackup;
-  }
-
-  ['server','client','shared'].each |String $percona_component| {
-    yum::versionlock { "Percona-XtraDB-Cluster-${percona_component}-${_percona_major_version}":
-      ensure  => "${percona_versionlock}",
-      version => "${percona_package_version}",
-      release => "${percona_package_release}",
-      epoch   => 0,
-      arch    => 'x86_64',
+  if $number_percona_major_version >= 80 {
+    case Integer($::operatingsystemmajrelease) {
+      8: {
+        Dnf::Module <| title == 'python-27' |>
+        package { $package_name :
+          ensure => $version_server
+        }
+      }
+      default: {
+        # We're only doing this for RHEL8
+      }
     }
   }
 }

@@ -1,4 +1,6 @@
 class percona::cluster (
+  $server_id                 = undef,
+  $package_name              = undef,
   $version_galera            = undef,
   $version_server            = undef,
   $versionlock               = undef,
@@ -21,6 +23,10 @@ class percona::cluster (
   $ssl_ca                    = undef,
   $ssl_cert                  = undef,
   $ssl_key                   = undef,
+  $character_set             = undef,
+  $secret_file               = undef,
+  $root_password             = undef,
+  $additional_config         = undef
 ) {
 
   if ! $version_server {
@@ -50,6 +56,7 @@ class percona::cluster (
   }
 
   class { 'percona::cluster::package':
+    package_name              => $package_name,
     version_server            => $version_server,
     versionlock               => $versionlock,
     version_xtrabackup        => $version_xtrabackup,
@@ -59,6 +66,7 @@ class percona::cluster (
   }
 
   class { 'percona::cluster::config':
+    server_id          => $server_id,
     data_dir           => $data_dir,
     tmp_dir            => $tmp_dir,
     ip_address         => $ip_address,
@@ -71,16 +79,28 @@ class percona::cluster (
     ssl                => $ssl,
     ssl_ca             => $ssl_ca,
     ssl_cert           => $ssl_cert,
-    ssl_key            => $ssl_key
+    ssl_key            => $ssl_key,
+    additional_config  => $additional_config
   }
 
-  Class['percona::cluster::package'] -> Class['percona::cluster::config']
-  service { 'mysqld':
-    name       => 'mysql',
-    ensure     => $service_ensure,
-    enable     => $service_enable,
-    hasrestart => true,
-    hasstatus  => true,
-    require    => [ Class['percona::cluster::package'], Class['percona::cluster::config'] ],
+  class { '::percona::cluster::service':
+    service_ensure     => $service_ensure,
+    service_enable     => $service_enable
   }
+
+  class { 'percona::cluster::root':
+    server_id          => $server_id,
+    socket_cnf         => $socket_cnf,
+    replace_root_mycnf => $replace_root_mycnf,
+    secret_file        => $secret_file,
+    root_password      => $root_password
+  }
+
+  # Install package, configure mysql, bootstrap cluster, configure root user, start mysql
+  Class['percona::cluster::package'] ->
+    Class['percona::cluster::config'] ->
+    Exec<| title == 'bootstrap_percona_cluster' |> ->
+    Class['percona::cluster::root'] ->
+    Service['mysql@bootstrap']
+
 }

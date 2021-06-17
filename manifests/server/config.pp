@@ -15,7 +15,23 @@ class percona::server::config (
   $ssl_key            = undef,
   $ssl_cert           = undef,
   $character_set      = 'utf8',
+  $default_config     = {
+    server-id          => 1,
+    bind_address       => '0.0.0.0',
+    character_set_server => 'utf8',
+    log-bin            => 'mysql-bin.log',
+    log-bin-index      => 'bin-log.index',
+    max_binlog_size    => '100M',
+    binlog_format      => 'ROW',
+    binlog_do_db       => undef,
+    binlog_space_limit => '800M',
+    binlog_row_image   => undef,
+    expire_logs_days   => 10,
+  },
+  $additional_config  = {},
 ) {
+
+  $config = deep_merge($default_config,$additional_config)
 
   file { '/etc/my.cnf':
     ensure  => present,
