@@ -14,7 +14,7 @@ class percona::cluster::config(
   $replace_mycnf      = false,
   $replace_root_mycnf = false,
   $ssl                = false,
-  $ssl_autogen        = true,
+  $ssl_autogen        = false,
   $ssl_ca             = undef,
   $ssl_key            = undef,
   $ssl_cert           = undef,
@@ -75,6 +75,13 @@ class percona::cluster::config(
     notify  => Service['mysqld']
   }
 
+  file { $config['slow_query_log_file'] :
+    ensure => present,
+    owner  => 'mysql',
+    group  => 'mysql',
+    mode   => '644'
+  }
+
   if $::selinux {
     notify {'ssl-disable':
       message => 'Percona Cluster is not selinux compatible at this point in
@@ -93,7 +100,12 @@ class percona::cluster::config(
   }
 
   if $ssl {
+    if $ssl_autogen {
+      fail("[Percona::Cluster::Config] You can not configure SSL autogen in clustered mode.
+        It is important that your cluster uses the same SSL certificates on all nodes.")
+    }
     class { '::percona::cluster::ssl':
+      ssl_autogen => $ssl_autogen,
       ssl_ca   => $ssl_ca,
       ssl_key  => $ssl_key,
       ssl_cert => $ssl_cert,

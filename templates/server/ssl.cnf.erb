@@ -1,5 +1,5 @@
 [mysqld]
-<% if @ssl_autogen %>
+<% if @ssl_autogen == false %>
 ssl-ca=<%= @ssl_ca %>
 ssl-key=<%= @ssl_key %>
 ssl-cert=<%= @ssl_cert %>
