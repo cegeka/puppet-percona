@@ -49,6 +49,7 @@ class percona::cluster::config(
     log_slave_updates  => 'ON',
     sql_mode           => undef,
     max_connections    => undef,
+    max_connect_errors => undef,
     time_zone          => undef,
     max_allowed_packet => '16M',
     gtid_mode          => undef,
@@ -59,6 +60,7 @@ class percona::cluster::config(
     thread_cache_size  => undef,
     query_cache_limit  => undef,
     query_cache_size   => undef,
+    skip_name_resolve  => 'ON'
   },
   $additional_config = {}
 ) {
