@@ -6,6 +6,7 @@ class percona::server::config (
   $socket_cnf         ='/var/lib/mysql/mysql.sock',
   $data_dir           ='/data/mysql',
   $tmp_dir            ='/data/mysql_tmp',
+  $service_name       = 'mysqld',
   $replace_mycnf      = false,
   $replace_root_mycnf = false,
   $secret_file        = undef,
@@ -58,7 +59,7 @@ class percona::server::config (
     mode    => '0644',
     content => template("${module_name}/server/my.cnf.erb"),
     replace => $replace_mycnf,
-    notify  => Service['mysqld']
+    notify  => Service[$service_name]
   }
   if $::selinux {
     file_line {

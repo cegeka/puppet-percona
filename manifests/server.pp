@@ -25,6 +25,12 @@ class percona::server (
     fail('Class[Percona::Server]: parameter version_server must be provided')
   }
 
+  if $facts['operatingsystemmajrelease'] == '6' {
+    $service_name = 'mysql'
+  } else {
+    $service_name = 'mysqld'
+  }
+
   class { 'percona::server::package':
     package_name    => $package_name,
     version_server  => $version_server,
@@ -41,10 +47,11 @@ class percona::server (
     ssl_ca              => $ssl_ca,
     ssl_cert            => $ssl_cert,
     ssl_key             => $ssl_key,
-    additional_config   => $additional_config
+    additional_config   => $additional_config,
+    service_name        => $service_name
   }
 
-  service { 'mysqld':
+  service { $service_name:
     ensure     => $service_ensure,
     enable     => $service_enable,
     hasrestart => true,
@@ -59,6 +66,6 @@ class percona::server (
     root_password      => $root_password
   }
 
-  Class['percona::server::package'] -> Class['percona::server::config'] -> Service['mysqld'] -> Class['percona::server::root']
+  Class['percona::server::package'] -> Class['percona::server::config'] -> Service[$service_name] -> Class['percona::server::root']
 
 }
