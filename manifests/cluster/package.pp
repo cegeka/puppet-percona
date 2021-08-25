@@ -64,6 +64,17 @@ class percona::cluster::package (
     require => [ Package['net-snmp'], Package['postfix']]
   }
 
+  package {
+    "Percona-XtraDB-Cluster-server-${_percona_major_version}" :
+      ensure => $version_server;
+    "Percona-XtraDB-Cluster-client-${_percona_major_version}" :
+      ensure => $version_server;
+    "Percona-XtraDB-Cluster-shared-${_percona_major_version}" :
+      ensure => $version_server;
+    $xtrabackup_name :
+      ensure => $version_xtrabackup;
+  }
+
   if $number_percona_major_version < 57 {
     package {
       "Percona-XtraDB-Cluster-galera-${_galera_major_version}" :
@@ -174,16 +185,6 @@ class percona::cluster::package (
         }
       }
       default: {}
-    }
-    package {
-      "Percona-XtraDB-Cluster-server-${_percona_major_version}" :
-        ensure => $version_server;
-      "Percona-XtraDB-Cluster-client-${_percona_major_version}" :
-        ensure => $version_server;
-      "Percona-XtraDB-Cluster-shared-${_percona_major_version}" :
-        ensure => $version_server;
-      $xtrabackup_name :
-        ensure => $version_xtrabackup;
     }
 
     ['server','client','shared'].each |String $percona_component| {
