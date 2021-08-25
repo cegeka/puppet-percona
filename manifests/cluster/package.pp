@@ -64,16 +64,7 @@ class percona::cluster::package (
     require => [ Package['net-snmp'], Package['postfix']]
   }
 
-  package {
-    "Percona-XtraDB-Cluster-server-${_percona_major_version}" :
-      ensure => $version_server;
-    "Percona-XtraDB-Cluster-client-${_percona_major_version}" :
-      ensure => $version_server;
-    "Percona-XtraDB-Cluster-shared-${_percona_major_version}" :
-      ensure => $version_server;
-    $xtrabackup_name :
-      ensure => $version_xtrabackup;
-  }
+
 
   if $number_percona_major_version < 57 {
     package {
@@ -86,11 +77,6 @@ class percona::cluster::package (
     -> Exec['remove-mariadb-libs']
     -> Exec['remove-mariadb-connector']
     -> Package["Percona-XtraDB-Cluster-galera-${_galera_major_version}"]
-    -> Package["Percona-XtraDB-Cluster-shared-${_percona_major_version}"]
-    -> Service['postfix']
-    -> Package["Percona-XtraDB-Cluster-client-${_percona_major_version}"]
-    -> Package[$xtrabackup_name]
-    -> Package["Percona-XtraDB-Cluster-server-${_percona_major_version}"]
     -> Package["Percona-XtraDB-Cluster-garbd-${_galera_major_version}"]
 
     ['garbd','galera'].each |String $percona_component| {
@@ -182,6 +168,16 @@ class percona::cluster::package (
             epoch   => 0,
             arch    => 'x86_64',
           }
+        }
+        package {
+          "Percona-XtraDB-Cluster-server-${_percona_major_version}" :
+            ensure => $version_server;
+          "Percona-XtraDB-Cluster-client-${_percona_major_version}" :
+            ensure => $version_server;
+          "Percona-XtraDB-Cluster-shared-${_percona_major_version}" :
+            ensure => $version_server;
+          $xtrabackup_name :
+            ensure => $version_xtrabackup;
         }
       }
       default: {}
