@@ -71,11 +71,6 @@ define percona::provision::user(
     })
     }
 
-    if $ensure == 'absent' {
-      percona_user { "${user}@${host}":
-        ensure => absent
-      }
-    }
   } else {
     fail("Mysql binary not found, Fact[::mysql_exists]:${::mysql_exists}")
   }
