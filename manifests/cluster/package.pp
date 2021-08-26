@@ -18,6 +18,10 @@ class percona::cluster::package (
   $percona_package_release      = regsubst($version_server, '^(.*?)-(.*)','\2')
   $number_percona_major_version = 0 + Integer($_percona_major_version)
 
+  if $xtrabackup_name == undef  {
+    fail("percona::Cluster::Package[${xtrabackup_name}]: must be given")
+  }
+
   if $version_galera == undef and $number_percona_major_version < 57 {
       fail("Percona::Cluster::Package[${version_galera}]: must be given if version_server < 57")
   }
@@ -29,12 +33,29 @@ class percona::cluster::package (
     $galera_package_release = regsubst($galera_major_version, '^(.*?)-(.*)','\2')
   }
 
-  if $package_name {
-    $real_package_name = $package_name
-  }
-
-  if $xtrabackup_name == undef  {
-    fail("percona::Cluster::Package[${xtrabackup_name}]: must be given")
+  if $number_percona_major_version >= 80 {
+    case Integer($::operatingsystemmajrelease) {
+      8: {
+        Dnf::Module <| title == 'python-27' |>
+        package { $package_name :
+          ensure => $version_server
+        }
+      }
+      default: {
+        # We're only doing this for RHEL8
+      }
+    }
+  }else{
+    package {
+      "Percona-XtraDB-Cluster-server-${_percona_major_version}" :
+        ensure => $version_server;
+      "Percona-XtraDB-Cluster-client-${_percona_major_version}" :
+        ensure => $version_server;
+      "Percona-XtraDB-Cluster-shared-${_percona_major_version}" :
+        ensure => $version_server;
+      $xtrabackup_name :
+        ensure => $version_xtrabackup;
+    }
   }
 
   case $versionlock {
@@ -64,8 +85,6 @@ class percona::cluster::package (
     require => [ Package['net-snmp'], Package['postfix']]
   }
 
-
-
   if $number_percona_major_version < 57 {
     package {
       "Percona-XtraDB-Cluster-galera-${_galera_major_version}" :
@@ -77,6 +96,7 @@ class percona::cluster::package (
     -> Exec['remove-mariadb-libs']
     -> Exec['remove-mariadb-connector']
     -> Package["Percona-XtraDB-Cluster-galera-${_galera_major_version}"]
+    -> Package["Percona-XtraDB-Cluster-server-${_percona_major_version}"]
     -> Package["Percona-XtraDB-Cluster-garbd-${_galera_major_version}"]
 
     ['garbd','galera'].each |String $percona_component| {
@@ -127,11 +147,8 @@ class percona::cluster::package (
         Exec['remove-Percona-Server-shared-56']
         -> Exec['remove-mariadb-libs']
         -> Exec['remove-mariadb-connector']
-        -> Package["Percona-XtraDB-Cluster-shared-${_percona_major_version}"]
         -> Package["Percona-XtraDB-Cluster-shared-compat-${_percona_major_version}"]
         -> Service['postfix']
-        -> Package["Percona-XtraDB-Cluster-client-${_percona_major_version}"]
-        -> Package[$xtrabackup_name]
         -> Package["Percona-XtraDB-Cluster-server-${_percona_major_version}"]
         -> Package["Percona-XtraDB-Cluster-garbd-${_percona_major_version}"]
 
@@ -169,16 +186,6 @@ class percona::cluster::package (
             arch    => 'x86_64',
           }
         }
-        package {
-          "Percona-XtraDB-Cluster-server-${_percona_major_version}" :
-            ensure => $version_server;
-          "Percona-XtraDB-Cluster-client-${_percona_major_version}" :
-            ensure => $version_server;
-          "Percona-XtraDB-Cluster-shared-${_percona_major_version}" :
-            ensure => $version_server;
-          $xtrabackup_name :
-            ensure => $version_xtrabackup;
-        }
       }
       default: {}
     }
@@ -190,20 +197,6 @@ class percona::cluster::package (
         release => "${percona_package_release}",
         epoch   => 0,
         arch    => 'x86_64',
-      }
-    }
-  }
-
-  if $number_percona_major_version >= 80 {
-    case Integer($::operatingsystemmajrelease) {
-      8: {
-        Dnf::Module <| title == 'python-27' |>
-        package { $package_name :
-          ensure => $version_server
-        }
-      }
-      default: {
-        # We're only doing this for RHEL8
       }
     }
   }
