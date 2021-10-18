@@ -7,6 +7,7 @@ class percona::cluster::config(
   $socket_cnf         ='/var/lib/mysql/mysql.sock',
   $data_dir           = '/data/mysql',
   $tmp_dir            = '/data/mysql_tmp',
+  $binlog_dir         = '/data/mysql_binlog',
   $ip_address         = undef,
   $cluster_address    = undef,
   $cluster_name       = undef,
@@ -33,8 +34,8 @@ class percona::cluster::config(
     wsrep_causal_reads => 1,
     wsrep_sync_wait    => undef,
     wsrep_log_conflicts => 'ON',
-    log-bin            => 'mysql-bin.log',
-    log-bin-index      => 'bin-log.index',
+    log-bin            => "${binlog_dir}/mysql-bin",
+    log-bin-index      => "${binlog_dir}/bin-log.index",
     max_binlog_size    => '100M',
     binlog_format      => 'ROW',
     binlog_do_db       => undef,
@@ -96,6 +97,10 @@ class percona::cluster::config(
       owner  => 'mysql',
       group  => 'mysql';
     $tmp_dir:
+      ensure => directory,
+      owner  => 'mysql',
+      group  => 'mysql';
+    $binlog_dir:
       ensure => directory,
       owner  => 'mysql',
       group  => 'mysql';
