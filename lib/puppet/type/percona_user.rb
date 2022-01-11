@@ -11,8 +11,8 @@ Puppet::Type.newtype(:percona_user) do
       # Regex should problably be more like this: /^[`'"]?[^`'"]*[`'"]?@[`'"]?[\w%\.]+[`'"]?$/
       raise(ArgumentError, "Invalid database user #{value}") unless value =~ /[\w-]*@[\w%\.:]+/
       username = value.split('@')[0]
-      if username.size > 16
-        raise ArgumentError, "MySQL usernames are limited to a maximum of 16 characters"
+      if username.size > 32
+        raise ArgumentError, "MySQL usernames are limited to a maximum of 32 characters"
       end
     end
   end
