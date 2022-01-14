@@ -45,6 +45,17 @@ class percona::cluster::package (
         # We're only doing this for RHEL8
       }
     }
+
+    ['server','client','shared', 'shared-compat'].each |String $percona_component| {
+      yum::versionlock { "percona-xtradb-cluster-${percona_component}":
+        ensure  => "${percona_versionlock}",
+        version => "${percona_package_version}",
+        release => "${percona_package_release}",
+        epoch   => 0,
+        arch    => 'x86_64',
+      }
+    }
+
   }else{
     package {
       "Percona-XtraDB-Cluster-server-${_percona_major_version}" :
