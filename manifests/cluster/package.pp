@@ -33,6 +33,12 @@ class percona::cluster::package (
     $galera_package_release = regsubst($galera_major_version, '^(.*?)-(.*)','\2')
   }
 
+  case $versionlock {
+    true:    { $percona_versionlock = 'present' }
+    false:   { $percona_versionlock = 'absent' }
+    default: { fail('Class[Percona::Cluster::Package]: parameter versionlock must be true or false') }
+  }
+
   if $number_percona_major_version >= 80 {
     case Integer($::operatingsystemmajrelease) {
       8: {
@@ -67,12 +73,6 @@ class percona::cluster::package (
       $xtrabackup_name :
         ensure => $version_xtrabackup;
     }
-  }
-
-  case $versionlock {
-    true:    { $percona_versionlock = 'present' }
-    false:   { $percona_versionlock = 'absent' }
-    default: { fail('Class[Percona::Cluster::Package]: parameter versionlock must be true or false') }
   }
 
   exec { 'remove-Percona-Server-shared-55':
