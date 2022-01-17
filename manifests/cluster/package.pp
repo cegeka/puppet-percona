@@ -43,7 +43,7 @@ class percona::cluster::package (
     case Integer($::operatingsystemmajrelease) {
       8: {
         Dnf::Module <| title == 'python-27' |>
-        package { 
+        package {
           $package_name :
             ensure => $version_server;
           $xtrabackup_name :
