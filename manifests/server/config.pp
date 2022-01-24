@@ -99,6 +99,7 @@ class percona::server::config (
 
   if $ssl {
     class { '::percona::server::ssl':
+      ssl_autogen => $ssl_autogen,
       ssl_ca   => $ssl_ca,
       ssl_key  => $ssl_key,
       ssl_cert => $ssl_cert,
