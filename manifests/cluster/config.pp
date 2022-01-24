@@ -45,7 +45,7 @@ class percona::cluster::config(
     innodb_autoinc_lock_mode => 2,
     innodb_ft_min_token_size => 2,
     log_bin_trust_function_creators => undef,
-    log_file           => '/var/log/mysqld.log',
+    general-log        => '/var/log/mysqld.log',
     slow_query_log_file  => '/var/log/mysql-slow.log',
     slow_query_log     => 'ON',
     log_slave_updates  => 'ON',
@@ -80,7 +80,7 @@ class percona::cluster::config(
   }
 
   file {
-    $config['log_file'] :
+    $config['general-log'] :
       ensure => present,
       owner  => 'mysql',
       group  => 'mysql',
