@@ -44,6 +44,7 @@ class percona::server (
     replace_mycnf       => $replace_mycnf,
     socket_cnf          => $socket_cnf,
     ssl                 => $ssl,
+    ssl_autogen         => $ssl_autogen,
     ssl_ca              => $ssl_ca,
     ssl_cert            => $ssl_cert,
     ssl_key             => $ssl_key,
