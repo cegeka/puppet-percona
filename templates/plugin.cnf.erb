@@ -1,0 +1,6 @@
+[mysqld]
+<%- @config.sort.each do |key,value| -%>
+<%- if value -%>
+<%= key %>=<%= value %>
+<%- end -%>
+<%- end -%>
