@@ -33,38 +33,31 @@ define percona::provision::rights(
 ) {
 
   if $::mysql_exists {
-    case $ensure {
-      'present': {
-        if $secretid == undef and $password == undef {
-          fail('You must privide a password or a secretid to ::mysql::rights')
-        }
-
-        if $secretid != undef {
-          $mysql_password = getsecret($secretid, 'Password')
-        } else {
-          $mysql_password = $password
-        }
-
-        ensure_resource('percona_user', "${user}@${host}", {
-          ensure        => $ensure,
-          password_hash => mysql_password($mysql_password),
-          provider      => 'mysql',
-          require       => Service['mysqld']
-        })
-
-        if $global { $real_type = '' } else { $real_type = "/${database}"}
-          mysql_grant { "${user}@${host}${real_type}":
-            privileges => $priv,
-            provider   => 'mysql',
-            require    => [ Percona_user["${user}@${host}"], Service["mysqld"] ]
-        }
-      }
-      'absent': {
-        percona_user { "${user}@${host}":
-          ensure => absent
-        }
-      }
+    if $secretid == undef and $password == undef {
+      fail('You must privide a password or a secretid to ::mysql::rights')
     }
+
+    if $secretid != undef {
+      $mysql_password = getsecret($secretid, 'Password')
+    } else {
+      $mysql_password = $password
+    }
+
+    ensure_resource('percona_user', "${user}@${host}", {
+      ensure        => $ensure,
+      password_hash => mysql_password($mysql_password),
+      provider      => 'mysql',
+      require       => Service['mysqld']
+    })
+
+    if $global { $real_type = '' } else { $real_type = "/${database}"}
+      if $ensure == 'present' {
+        mysql_grant { "${user}@${host}${real_type}":
+          privileges => $priv,
+          provider   => 'mysql',
+          require    => [ Percona_user["${user}@${host}"], Service["mysqld"] ]
+        }
+      }
   } else {
     fail("Mysql binary not found, Fact[::mysql_exists]:${::mysql_exists}")
   }
