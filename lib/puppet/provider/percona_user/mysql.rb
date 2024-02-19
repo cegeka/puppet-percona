@@ -15,7 +15,7 @@ Puppet::Type.type(:percona_user).provide(:mysql) do
   end
 
   def create
-    mysql([defaults_file, "mysql", "-e", "create user '%s' identified with mysql_native_password as '%s'" % [ @resource[:name].sub("@", "'@'"), @resource.value(:password_hash) ]].compact)
+    mysql([defaults_file, "mysql", "-e", "create user '%s' identified with caching_sha2_password as '%s'" % [ @resource[:name].sub("@", "'@'"), @resource.value(:password_hash) ]].compact)
   end
 
   def destroy
@@ -33,7 +33,7 @@ Puppet::Type.type(:percona_user).provide(:mysql) do
   end
 
   def password_hash=(string)
-    mysql([defaults_file, "mysql", "-e", "ALTER user '%s' identified with mysql_native_password as '%s'" % [ @resource[:name].sub("@", "'@'"), string ] ].compact)
+    mysql([defaults_file, "mysql", "-e", "ALTER user '%s' identified with caching_sha2_password as '%s'" % [ @resource[:name].sub("@", "'@'"), string ] ].compact)
   end
 
   def exists?
