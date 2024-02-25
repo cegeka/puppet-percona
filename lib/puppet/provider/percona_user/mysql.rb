@@ -15,14 +15,14 @@ Puppet::Type.type(:percona_user).provide(:mysql) do
   end
 
   def create
-    mysql([defaults_file, "mysql", "-e", "create user '%s' identified with mysql_native_password as '%s'" % [ @resource[:name].sub("@", "'@'"), @resource.value(:password_hash) ]].compact)
+    mysql([defaults_file, "mysql", "-e", "create user '%s' identified with caching_sha2_password by '%s'" % [ @resource[:name].sub("@", "'@'"), @resource.value(:password_user) ]].compact)
   end
 
   def destroy
     mysql([defaults_file, "mysql", "-e", "drop user '%s'" % @resource.value(:name).sub("@", "'@'") ].compact)
   end
 
-  def password_hash
+  def password_user
     mysql_version = mysql(["-V"])
     percona_version=%r{(Distrib|Ver?) (\d+\.\d+)\.\d+}.match(mysql_version)[2].gsub('.','')
     if percona_version.to_i >= 57
@@ -32,8 +32,8 @@ Puppet::Type.type(:percona_user).provide(:mysql) do
     end
   end
 
-  def password_hash=(string)
-    mysql([defaults_file, "mysql", "-e", "ALTER user '%s' identified with mysql_native_password as '%s'" % [ @resource[:name].sub("@", "'@'"), string ] ].compact)
+  def password_user=(string)
+    mysql([defaults_file, "mysql", "-e", "ALTER user '%s' identified with caching_sha2_password by '%s'" % [ @resource[:name].sub("@", "'@'"), string ] ].compact)
   end
 
   def exists?

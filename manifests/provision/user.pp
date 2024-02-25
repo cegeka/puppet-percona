@@ -39,7 +39,7 @@ define percona::provision::user(
     {
       ensure_resource('percona_user', "${user}@${host}", {
         ensure        => $ensure,
-        password_hash => mysql_password($mysql_password),
+        password_user => Sensitive($mysql_password),
         provider      => 'mysql',
         require       => Service['mysqld']
       })
@@ -65,7 +65,7 @@ define percona::provision::user(
     {
     ensure_resource('percona_user', "${user}@${host}", {
       ensure        => $ensure,
-      password_hash => mysql_password($mysql_password),
+      password_user => Sensitive($mysql_password),
       provider      => 'mysql',
       require       => Service['mysqld']
     })
