@@ -15,8 +15,20 @@ Puppet::Type.type(:percona_user).provide(:mysql) do
   end
 
   def create
-    mysql([defaults_file, "mysql", "-e", "create user '%s' identified with caching_sha2_password by '%s'" % [ @resource[:name].sub("@", "'@'"), @resource.value(:password_user) ]].compact)
+    username = @resource[:name].sub("@", "'@'")
+    password = @resource.value(:password_user)
+    
+    command = "/bin/mysql --defaults-file=/root/.my.cnf mysql -e \"create user '#{username}' identified by '#{password}'\""
+  
+    success = system("#{command} >/dev/null 2>&1")
+    
+    if success
+      Puppet.notice("User #{username} was successfully created.")
+    else
+      Puppet.err("Failed to create user #{username} - Check password requirements")
+    end
   end
+
 
   def destroy
     mysql([defaults_file, "mysql", "-e", "drop user '%s'" % @resource.value(:name).sub("@", "'@'") ].compact)
@@ -32,8 +44,20 @@ Puppet::Type.type(:percona_user).provide(:mysql) do
     end
   end
 
+  
   def password_user=(string)
-    mysql([defaults_file, "mysql", "-e", "ALTER user '%s' identified with caching_sha2_password by '%s'" % [ @resource[:name].sub("@", "'@'"), string ] ].compact)
+    username = @resource[:name].sub("@", "'@'")
+    password = @resource.value(:password_user)
+
+    command = "/bin/mysql --defaults-file=/root/.my.cnf mysql -e \"alter user '#{username}' identified by '#{password}'\""
+
+    success = system("#{command} >/dev/null 2>&1")
+
+    if success
+      Puppet.notice("User #{username} was successfully altered.")
+    else
+      Puppet.err("Failed to alter user #{username} - Check password requirements")
+    end
   end
 
   def exists?
