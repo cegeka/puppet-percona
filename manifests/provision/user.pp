@@ -1,4 +1,4 @@
-# == Definition: mysql::rights
+# == Definition: mysql::rightpassword_users
 #
 # A basic helper used to create a user
 #
@@ -39,7 +39,7 @@ define percona::provision::user(
     {
       ensure_resource('percona_user', "${user}@${host}", {
         ensure        => $ensure,
-        password_user => Sensitive($mysql_password),
+        password_hash => mysql_password($mysql_password),
         provider      => 'mysql',
         require       => Service['mysqld']
       })
@@ -65,7 +65,7 @@ define percona::provision::user(
     {
     ensure_resource('percona_user', "${user}@${host}", {
       ensure        => $ensure,
-      password_user => Sensitive($mysql_password),
+      password_hash => mysql_password($mysql_password),
       provider      => 'mysql',
       require       => Service['mysqld']
     })

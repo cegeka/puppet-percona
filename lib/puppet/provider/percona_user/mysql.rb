@@ -15,18 +15,7 @@ Puppet::Type.type(:percona_user).provide(:mysql) do
   end
 
   def create
-    username = @resource[:name].sub("@", "'@'")
-    password = @resource.value(:password_user)
-    
-    command = "/bin/mysql --defaults-file=/root/.my.cnf mysql -e \"create user '#{username}' identified by '#{password}'\""
-  
-    success = system("#{command} >/dev/null 2>&1")
-    
-    if success
-      Puppet.notice("User #{username} was successfully created.")
-    else
-      Puppet.err("Failed to create user #{username} - Check password requirements")
-    end
+    mysql([defaults_file, "mysql", "-e", "create user '%s' identified with mysql_native_password as '%s'" % [ @resource[:name].sub("@", "'@'"), @resource.value(:password_hash) ]].compact)
   end
 
 
@@ -34,7 +23,7 @@ Puppet::Type.type(:percona_user).provide(:mysql) do
     mysql([defaults_file, "mysql", "-e", "drop user '%s'" % @resource.value(:name).sub("@", "'@'") ].compact)
   end
 
-  def password_user
+  def password_hash
     mysql_version = mysql(["-V"])
     percona_version=%r{(Distrib|Ver?) (\d+\.\d+)\.\d+}.match(mysql_version)[2].gsub('.','')
     if percona_version.to_i >= 57
@@ -45,19 +34,8 @@ Puppet::Type.type(:percona_user).provide(:mysql) do
   end
 
   
-  def password_user=(string)
-    username = @resource[:name].sub("@", "'@'")
-    password = @resource.value(:password_user)
-
-    command = "/bin/mysql --defaults-file=/root/.my.cnf mysql -e \"alter user '#{username}' identified by '#{password}'\""
-
-    success = system("#{command} >/dev/null 2>&1")
-
-    if success
-      Puppet.notice("User #{username} was successfully altered.")
-    else
-      Puppet.err("Failed to alter user #{username} - Check password requirements")
-    end
+  def password_hash=(string)
+    mysql([defaults_file, "mysql", "-e", "ALTER user '%s' identified with mysql_native_password as '%s'" % [ @resource[:name].sub("@", "'@'"), string ] ].compact)
   end
 
   def exists?

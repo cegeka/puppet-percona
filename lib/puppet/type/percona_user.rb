@@ -17,8 +17,8 @@ Puppet::Type.newtype(:percona_user) do
     end
   end
 
-  newproperty(:password_user) do
-    desc "The password of the user. The password is redacted from the logs and puppet outputs"
+  newproperty(:password_hash) do
+    desc "The password hash of the user. Use mysql_password() for creating such a hash."
     newvalue(/\w+/)
   end
 
