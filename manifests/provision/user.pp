@@ -1,4 +1,4 @@
-# == Definition: mysql::rightpassword_users
+# == Definition: mysql::rights
 #
 # A basic helper used to create a user
 #
