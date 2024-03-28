@@ -9,6 +9,7 @@ class percona::cluster (
   $data_dir                  = '/data/mysql',
   $tmp_dir                   = '/data/mysql_tmp',
   $binlog_dir                = '/data/mysql_binlog',
+  $error_log                 = '/var/log/mysqld.log',
   $ip_address                = undef,
   $cluster_address           = undef,
   $cluster_name              = undef,
@@ -71,6 +72,7 @@ class percona::cluster (
     data_dir           => $data_dir,
     tmp_dir            => $tmp_dir,
     binlog_dir         => $binlog_dir,
+    error_log          => $error_log,
     ip_address         => $ip_address,
     cluster_address    => $cluster_address,
     cluster_name       => $cluster_name,
@@ -105,5 +107,4 @@ class percona::cluster (
     Exec<| title == 'bootstrap_percona_cluster' |> ->
     Class['percona::cluster::root'] ->
     Service['mysql@bootstrap']
-
 }

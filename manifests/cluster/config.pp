@@ -8,6 +8,7 @@ class percona::cluster::config(
   $data_dir           = '/data/mysql',
   $tmp_dir            = '/data/mysql_tmp',
   $binlog_dir         = '/data/mysql_binlog',
+  $error_log          = '/var/log/mysqld.log',
   $ip_address         = undef,
   $cluster_address    = undef,
   $cluster_name       = undef,
