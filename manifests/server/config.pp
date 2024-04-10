@@ -3,9 +3,10 @@
 # Usage: this class should not be called directly
 #
 class percona::server::config (
-  $socket_cnf         ='/var/lib/mysql/mysql.sock',
-  $data_dir           ='/data/mysql',
-  $tmp_dir            ='/data/mysql_tmp',
+  $socket_cnf         = '/var/lib/mysql/mysql.sock',
+  $data_dir           = '/data/mysql',
+  $tmp_dir            = '/data/mysql_tmp',
+  $error_log          = '/var/log/mysqld.log',
   $service_name       = 'mysqld',
   $replace_mycnf      = false,
   $replace_root_mycnf = false,

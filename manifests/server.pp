@@ -7,6 +7,7 @@ class percona::server (
   $versionlock         = false,
   $data_dir            = '/data/mysql',
   $tmp_dir             = '/data/mysql_tmp',
+  $error_log           = '/var/log/mysqld.log',
   $replace_mycnf       = false,
   $replace_root_mycnf  = false,
   $service_ensure      = 'running',
@@ -41,6 +42,7 @@ class percona::server (
   class { 'percona::server::config':
     data_dir            => $data_dir,
     tmp_dir             => $tmp_dir,
+    error_log           => $error_log,
     replace_mycnf       => $replace_mycnf,
     socket_cnf          => $socket_cnf,
     ssl                 => $ssl,
