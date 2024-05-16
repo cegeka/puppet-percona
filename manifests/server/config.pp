@@ -77,6 +77,26 @@ class percona::server::config (
       mode   => '0644'
   }
 
+  if $config['slow_query_log'] == 'ON' {
+#   https://www.percona.com/blog/2013/04/18/rotating-mysql-slow-logs-safely/
+    logrotate::rule { 'mysql-slow':
+        ensure        => absent,
+        path          => '/var/log/mysql-slow.log',
+        create        => true,
+        create_owner  => 'mysql',
+        create_group  => 'mysql',
+        create_mode   => '0660',
+        size          => '100M',
+        compress      => false,
+        dateext       => true,
+        missingok     => true,
+        ifempty       => false,
+        sharedscripts => true,
+        rotate        => 2,
+        postrotate    => '/usr/bin/mysql -qe "select @@global.long_query_time into @lqt_save; set global long_query_time=2000; select sleep(2); FLUSH SLOW LOGS; select sleep(2); set global long_query_time=@lqt_save;"'
+    }
+  }
+
   if $::selinux {
     file_line {
       'selinux_context_mysql_datadir':
