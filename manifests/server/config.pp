@@ -97,7 +97,7 @@ class percona::server::config (
     }
   }
 
-  if $::selinux {
+  if $facts['selinux'] {
     file_line {
       'selinux_context_mysql_datadir':
         path => '/etc/selinux/targeted/contexts/files/file_contexts.local',
