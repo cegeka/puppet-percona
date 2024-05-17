@@ -141,9 +141,9 @@ class percona::cluster::config(
     }
     class { '::percona::cluster::ssl':
       ssl_autogen => $ssl_autogen,
-      ssl_ca   => $ssl_ca,
-      ssl_key  => $ssl_key,
-      ssl_cert => $ssl_cert,
+      ssl_ca      => $ssl_ca,
+      ssl_key     => $ssl_key,
+      ssl_cert    => $ssl_cert,
     }
   }
 
