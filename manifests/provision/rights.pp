@@ -4,18 +4,18 @@
 #
 # Example usage:
 #  percona::provision::rights { "example case":
-#    user       => "foo",
-#    password   => "bar",
-#    database   => "mydata",
-#    priv       => ["select_priv", "update_priv"],
-#    sectret_id => 123456
+#    user            => "foo",
+#    password_hash   => "bar",
+#    database        => "mydata",
+#    priv            => ["select_priv", "update_priv"],
+#    sectret_id      => 123456
 #  }
 #
 #Available parameters:
 #- *$ensure": defaults to present
 #- *$database*: the target database
 #- *$user*: the target user
-#- *$password*: user's password
+#- *$password_hash*: user's hashed password
 #- *$secretid*: the ID for PIM
 #- *$host*: target host, default to "localhost"
 #- *$priv*: target privileges, defaults to "all" (values are the fieldnames from mysql.db table).
@@ -23,7 +23,7 @@
 define percona::provision::rights(
   $database,
   $user,
-  $password=undef,
+  $password_hash=undef,
   $secretid=undef,
   $host='localhost',
   $ensure='present',
@@ -33,19 +33,20 @@ define percona::provision::rights(
 ) {
 
   if $::mysql_exists {
-    if $secretid == undef and $password == undef {
-      fail('You must privide a password or a secretid to ::mysql::rights')
+    if $secretid == undef and $password_hash == undef {
+      fail('You must provide a password hash or a secretid to ::mysql::rights')
     }
 
     if $secretid != undef {
-      $mysql_password = getsecret($secretid, 'Password')
+      $pim_password = getsecret($secretid, 'Password')
+      $mysql_password = mysql_password($pim_password)
     } else {
-      $mysql_password = $password
+      $mysql_password = $password_hash
     }
 
     ensure_resource('percona_user', "${user}@${host}", {
       ensure        => $ensure,
-      password_hash => mysql_password($mysql_password),
+      password_hash => $mysql_password,
       provider      => 'mysql',
       require       => Service['mysqld']
     })
