@@ -90,9 +90,9 @@ class percona::cluster (
   }
 
   class { '::percona::cluster::service':
-    server_id       => $server_id,
-    service_ensure  => $service_ensure,
-    service_enable  => $service_enable
+    server_id      => $server_id,
+    service_ensure => $service_ensure,
+    service_enable => $service_enable
   }
 
   class { 'percona::cluster::root':
@@ -106,7 +106,7 @@ class percona::cluster (
   # Install package, configure mysql, bootstrap cluster, configure root user, start mysql
   Class['percona::cluster::package']
     -> Class['percona::cluster::config']
-    -> Exec<| title == 'bootstrap_percona_cluster' |> 
+    -> Exec<| title == 'bootstrap_percona_cluster' |>
     -> Class['percona::cluster::root']
     -> Service['mysql@bootstrap']
 }
