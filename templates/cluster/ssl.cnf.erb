@@ -7,7 +7,9 @@ ssl-cert=<%= @ssl_cert %>
 <% end %>
 
 [client]
-<% if @ssl_autogen == false %>
+<% if !@ssl_ca_client.empty? %>
+ssl-ca=<%= @ssl_ca_client %>
+<% elsif @ssl_autogen == false %>
 ssl-ca=<%= @ssl_ca %>
 ssl-key=<%= @ssl_key %>
 ssl-cert=<%= @ssl_cert %>

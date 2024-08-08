@@ -20,6 +20,7 @@ class percona::cluster::config(
   $ssl_ca             = undef,
   $ssl_key            = undef,
   $ssl_cert           = undef,
+  $ssl_ca_client      = "",
   $default_config     = {
     bind_address       => '0.0.0.0',
     character_set_server => 'utf8',
@@ -140,10 +141,11 @@ class percona::cluster::config(
         It is important that your cluster uses the same SSL certificates on all nodes.")
     }
     class { '::percona::cluster::ssl':
-      ssl_autogen => $ssl_autogen,
-      ssl_ca      => $ssl_ca,
-      ssl_key     => $ssl_key,
-      ssl_cert    => $ssl_cert,
+      ssl_autogen   => $ssl_autogen,
+      ssl_ca        => $ssl_ca,
+      ssl_key       => $ssl_key,
+      ssl_cert      => $ssl_cert,
+      ssl_ca_client => $ssl_ca_client
     }
   }
 

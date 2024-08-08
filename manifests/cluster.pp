@@ -28,7 +28,8 @@ class percona::cluster (
   $character_set             = undef,
   $secret_file               = undef,
   $root_password             = undef,
-  $additional_config         = undef
+  $additional_config         = undef,
+  $ssl_ca_client             = "",
 ) {
 
   if ! $version_server {
@@ -84,7 +85,8 @@ class percona::cluster (
     ssl_ca             => $ssl_ca,
     ssl_cert           => $ssl_cert,
     ssl_key            => $ssl_key,
-    additional_config  => $additional_config
+    additional_config  => $additional_config,
+    ssl_ca_client      => $ssl_ca_client
   }
 
   class { '::percona::cluster::service':

@@ -3,10 +3,11 @@
 # Usage: this class should not be called directly
 #
 class percona::cluster::ssl (
-  $ssl_autogen = false,
-  $ssl_ca = undef,
-  $ssl_key = undef,
-  $ssl_cert = undef
+  $ssl_autogen   = false,
+  $ssl_ca        = undef,
+  $ssl_key       = undef,
+  $ssl_cert      = undef,
+  $ssl_ca_client = ""
 ) {
 
   file { '/etc/my.cnf.d/ssl.cnf':
