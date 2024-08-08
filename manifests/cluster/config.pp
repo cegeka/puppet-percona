@@ -20,7 +20,7 @@ class percona::cluster::config(
   $ssl_ca             = undef,
   $ssl_key            = undef,
   $ssl_cert           = undef,
-  $ssl_ca_client      = "",
+  $ssl_ca_client      = '',
   $default_config     = {
     bind_address       => '0.0.0.0',
     character_set_server => 'utf8',
