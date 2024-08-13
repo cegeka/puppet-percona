@@ -26,7 +26,7 @@ class percona::server (
     fail('Class[Percona::Server]: parameter version_server must be provided')
   }
 
-  if $facts['operatingsystemmajrelease'] == '6' {
+  if $facts['os']['release']['major'] == '6' {
     $service_name = 'mysql'
   } else {
     $service_name = 'mysqld'

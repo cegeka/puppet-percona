@@ -114,7 +114,7 @@ class percona::cluster::config(
     }
   }
 
-  if $facts['selinux'] {
+  if $facts['os']['selinux']['enabled'] {
     notify {'ssl-disable':
       message => 'Percona Cluster is not selinux compatible at this point in
                   time.'

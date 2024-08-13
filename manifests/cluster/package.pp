@@ -40,7 +40,7 @@ class percona::cluster::package (
   }
 
   if $number_percona_major_version >= 80 {
-    case Integer($::operatingsystemmajrelease) {
+    case Integer($facts['os']['release']['major']) {
       8: {
         Dnf::Module <| title == 'python-27' |>
         package {
@@ -124,7 +124,7 @@ class percona::cluster::package (
     }
   }
   if $number_percona_major_version >= 57 and $number_percona_major_version < 80 {
-    case Integer($::operatingsystemmajrelease) {
+    case Integer($facts['os']['release']['major']) {
       6: {
         package {
           "Percona-XtraDB-Cluster-garbd-${_percona_major_version}" :
