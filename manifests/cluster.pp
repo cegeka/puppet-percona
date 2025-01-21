@@ -31,7 +31,6 @@ class percona::cluster (
   $additional_config         = undef,
   $ssl_ca_client_path        = undef,
 ) {
-
   if ! $version_server {
     fail('Class[Percona::Cluster]: parameter version_server must be provided')
   }
@@ -86,13 +85,13 @@ class percona::cluster (
     ssl_cert           => $ssl_cert,
     ssl_key            => $ssl_key,
     additional_config  => $additional_config,
-    ssl_ca_client_path => $ssl_ca_client_path
+    ssl_ca_client_path => $ssl_ca_client_path,
   }
 
   class { '::percona::cluster::service':
     server_id      => $server_id,
     service_ensure => $service_ensure,
-    service_enable => $service_enable
+    service_enable => $service_enable,
   }
 
   class { 'percona::cluster::root':
@@ -100,7 +99,15 @@ class percona::cluster (
     socket_cnf         => $socket_cnf,
     replace_root_mycnf => $replace_root_mycnf,
     secret_file        => $secret_file,
-    root_password      => $root_password
+    root_password      => $root_password,
+  }
+
+  # The if statement is temporary until all percona-clusters have been upgraded to v8.0.37
+  if ($version_server == '8.0.37-29.1.el8' ) {
+    service { 'percona-telemetry-agent':
+      ensure => stopped,
+      enable => false,
+    }
   }
 
   # Install package, configure mysql, bootstrap cluster, configure root user, start mysql

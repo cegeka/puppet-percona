@@ -21,7 +21,6 @@ class percona::server (
   $root_password       = undef,
   $additional_config   = undef
 ) {
-
   if ! $version_server {
     fail('Class[Percona::Server]: parameter version_server must be provided')
   }
@@ -36,22 +35,22 @@ class percona::server (
     package_name    => $package_name,
     version_server  => $version_server,
     versionlock     => $versionlock,
-    xtrabackup_name => $xtrabackup_name
+    xtrabackup_name => $xtrabackup_name,
   }
 
   class { 'percona::server::config':
-    data_dir            => $data_dir,
-    tmp_dir             => $tmp_dir,
-    error_log           => $error_log,
-    replace_mycnf       => $replace_mycnf,
-    socket_cnf          => $socket_cnf,
-    ssl                 => $ssl,
-    ssl_autogen         => $ssl_autogen,
-    ssl_ca              => $ssl_ca,
-    ssl_cert            => $ssl_cert,
-    ssl_key             => $ssl_key,
-    additional_config   => $additional_config,
-    service_name        => $service_name
+    data_dir          => $data_dir,
+    tmp_dir           => $tmp_dir,
+    error_log         => $error_log,
+    replace_mycnf     => $replace_mycnf,
+    socket_cnf        => $socket_cnf,
+    ssl               => $ssl,
+    ssl_autogen       => $ssl_autogen,
+    ssl_ca            => $ssl_ca,
+    ssl_cert          => $ssl_cert,
+    ssl_key           => $ssl_key,
+    additional_config => $additional_config,
+    service_name      => $service_name,
   }
 
   service { $service_name:
@@ -59,16 +58,23 @@ class percona::server (
     enable     => $service_enable,
     hasrestart => true,
     hasstatus  => true,
-    require    => [ Class['percona::server::package'], Class['percona::server::config'] ],
+    require    => [Class['percona::server::package'], Class['percona::server::config']],
   }
 
   class { 'percona::server::root':
     socket_cnf         => $socket_cnf,
     replace_root_mycnf => $replace_root_mycnf,
     secret_file        => $secret_file,
-    root_password      => $root_password
+    root_password      => $root_password,
+  }
+
+  # The if statement is temporary until all percona-servers have been upgraded to v8.0.37
+  if ($version_server == '8.0.37-29.1.el8' ) {
+    service { 'percona-telemetry-agent':
+      ensure => stopped,
+      enable => false,
+    }
   }
 
   Class['percona::server::package'] -> Class['percona::server::config'] -> Service[$service_name] -> Class['percona::server::root']
-
 }
