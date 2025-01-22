@@ -104,9 +104,13 @@ class percona::cluster (
 
   # The if statement is temporary until all percona-clusters have been upgraded to v8.0.37
   if ($version_server == '8.0.37-29.1.el8' ) {
+    package { 'percona-telemetry-agent':
+      ensure => present,
+    }
     service { 'percona-telemetry-agent':
-      ensure => stopped,
-      enable => false,
+      ensure  => stopped,
+      enable  => false,
+      require => Package['percona-telemetry-agent'],
     }
   }
 

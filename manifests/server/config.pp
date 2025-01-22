@@ -16,6 +16,7 @@ class percona::server::config (
   $ssl_ca             = undef,
   $ssl_key            = undef,
   $ssl_cert           = undef,
+  $version_server     = $version_server,
   $default_config     = {
     server-id          => 1,
     bind_address       => '0.0.0.0',

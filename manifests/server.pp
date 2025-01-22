@@ -51,6 +51,7 @@ class percona::server (
     ssl_key           => $ssl_key,
     additional_config => $additional_config,
     service_name      => $service_name,
+    version_server    => $version_server,
   }
 
   service { $service_name:
@@ -70,9 +71,13 @@ class percona::server (
 
   # The if statement is temporary until all percona-servers have been upgraded to v8.0.37
   if ($version_server == '8.0.37-29.1.el8' ) {
+    package { 'percona-telemetry-agent':
+      ensure => present,
+    }
     service { 'percona-telemetry-agent':
-      ensure => stopped,
-      enable => false,
+      ensure  => stopped,
+      enable  => false,
+      require => Package['percona-telemetry-agent'],
     }
   }
 
