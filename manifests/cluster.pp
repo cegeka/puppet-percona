@@ -102,8 +102,8 @@ class percona::cluster (
     root_password      => $root_password,
   }
 
-  # The if statement is temporary until all percona-clusters have been upgraded to v8.0.37
-  if ($version_server == '8.0.37-29.1.el8' ) {
+  # The if statement is temporary until all percona-clusters have been upgraded to v8.0.39
+  if ($version_server == '8.0.39-30.1.el[89]' ) {
     package { 'percona-telemetry-agent':
       ensure => present,
     }
@@ -116,8 +116,8 @@ class percona::cluster (
 
   # Install package, configure mysql, bootstrap cluster, configure root user, start mysql
   Class['percona::cluster::package']
-    -> Class['percona::cluster::config']
-    -> Exec<| title == 'bootstrap_percona_cluster' |>
-    -> Class['percona::cluster::root']
-    -> Service['mysql@bootstrap']
+  -> Class['percona::cluster::config']
+  -> Exec<| title == 'bootstrap_percona_cluster' |>
+  -> Class['percona::cluster::root']
+  -> Service['mysql@bootstrap']
 }

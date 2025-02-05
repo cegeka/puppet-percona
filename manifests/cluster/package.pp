@@ -3,27 +3,26 @@
 # Usage: this class should not be called directly
 #
 class percona::cluster::package (
-  $package_name       = undef,
-  $version_galera     = undef,
-  $version_server     = undef,
-  $versionlock        = undef,
-  $version_xtrabackup = undef,
-  $xtrabackup_name    = undef,
-  $server_shared_compat_name = 'Percona-Server-shared-compat'
+  $package_name              = undef,
+  $version_galera            = undef,
+  $version_server            = undef,
+  $versionlock               = undef,
+  $version_xtrabackup        = undef,
+  $xtrabackup_name           = undef,
+  $server_shared_compat_name = 'Percona-Server-shared-compat',
 ) {
-
   $percona_major_version        = regsubst($version_server, '^(\d\.\d)\.(\d+)-(.*)','\1')
   $_percona_major_version       = regsubst($percona_major_version, '\.', '', 'G')
   $percona_package_version      = regsubst($version_server, '^(.*?)-(.*)','\1')
   $percona_package_release      = regsubst($version_server, '^(.*?)-(.*)','\2')
   $number_percona_major_version = 0 + Integer($_percona_major_version)
 
-  if $xtrabackup_name == undef  {
+  if $xtrabackup_name == undef {
     fail("percona::Cluster::Package[${xtrabackup_name}]: must be given")
   }
 
   if $version_galera == undef and $number_percona_major_version < 57 {
-      fail("Percona::Cluster::Package[${version_galera}]: must be given if version_server < 57")
+    fail("Percona::Cluster::Package[${version_galera}]: must be given if version_server < 57")
   }
 
   if $version_galera != undef {
@@ -64,8 +63,7 @@ class percona::cluster::package (
         arch    => 'x86_64',
       }
     }
-
-  }else{
+  } else {
     package {
       "Percona-XtraDB-Cluster-server-${_percona_major_version}" :
         ensure => $version_server;
@@ -81,22 +79,22 @@ class percona::cluster::package (
   exec { 'remove-Percona-Server-shared-55':
     command => '/bin/rpm -e --nodeps Percona-Server-shared-55',
     onlyif  => '/bin/rpm -qi Percona-Server-shared-55',
-    require => [ Package['net-snmp'], Package['postfix'] ]
+    require => [Package['net-snmp'], Package['postfix']],
   }
   exec { 'remove-Percona-Server-shared-56':
     command => '/bin/rpm -e --nodeps Percona-Server-shared-56',
     onlyif  => '/bin/rpm -qi Percona-Server-shared-56',
-    require => [ Package['net-snmp'], Package['postfix'], Exec['remove-Percona-Server-shared-55'] ]
+    require => [Package['net-snmp'], Package['postfix'], Exec['remove-Percona-Server-shared-55']],
   }
   exec { 'remove-mariadb-libs':
     command => '/bin/rpm -e --nodeps mariadb-libs',
     onlyif  => '/bin/rpm -qi mariadb-libs',
-    require => [ Package['net-snmp'], Package['postfix']]
+    require => [Package['net-snmp'], Package['postfix']],
   }
   exec { 'remove-mariadb-connector':
     command => '/bin/rpm -e --nodeps mariadb-connector-c-config',
     onlyif  => '/bin/rpm -qi mariadb-connector-c-config',
-    require => [ Package['net-snmp'], Package['postfix']]
+    require => [Package['net-snmp'], Package['postfix']],
   }
 
   if $number_percona_major_version < 57 {
