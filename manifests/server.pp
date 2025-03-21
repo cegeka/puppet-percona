@@ -70,7 +70,7 @@ class percona::server (
   }
 
   # The if statement is temporary until all percona-servers have been upgraded to v8.0.37
-  if ($version_server == '8.0.37-29.1.el8' ) {
+  if ($version_server == '8.0.39-30.1.el8' ) {
     package { 'percona-telemetry-agent':
       ensure => present,
     }
