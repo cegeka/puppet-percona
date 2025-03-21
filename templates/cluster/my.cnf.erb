@@ -4,7 +4,7 @@ tmpdir=<%= @tmp_dir %>
 socket=/var/lib/mysql/mysql.sock
 user=mysql
 default-storage-engine = InnoDB
-<%- if @version_server == "8.0.37-29.1.el8" -%>
+<%- if @version_server == "8.0.39-30.1.el8" || @version_server == "8.0.39-30.1.el9" -%>
 percona_telemetry_disable=1
 <%- end -%>
 
