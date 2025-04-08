@@ -69,8 +69,10 @@ class percona::server (
     root_password      => $root_password,
   }
 
-  # The if statement is temporary until all percona-servers have been upgraded to v8.0.39
-  if ($version_server == '8.0.39-30.1.el[89]' ) {
+  # Temporary if statement until all percona-servers have been upgraded to at least v8.0.39-30 or higher
+  if ( $version_server =~ '8.0.39-30.1' ) {
+    # By default Percona now sends telemetry which we do not want since we're working with sensitive data
+    # According to the docs disabling the agent is enough to not send logs anymore
     package { 'percona-telemetry-agent':
       ensure => present,
     }
