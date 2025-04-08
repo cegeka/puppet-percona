@@ -22,20 +22,19 @@ class percona::server::package (
 
   # Base package list (always installed)
   $base_packages = {
-    $real_package_name         => $version_server,
-    $xtrabackup_name           => $version_xtrabackup,
-    'percona-server-client'    => $version_server,
-    'percona-server-shared'    => $version_server,
+    $real_package_name       => $version_server,
+    $xtrabackup_name         => $version_xtrabackup,
+    'percona-server-client'  => $version_server,
+    'percona-server-shared'  => $version_server,
+    'percona-icu-data-files' => $version_server,
   }
 
-  # OS-Specific packages
+  # OS-Specific package
   $extra_packages = $facts['os']['release']['major'] ? {
     '8'  => { 'percona-server-shared-compat' => $version_server },
-    '9'  => { 'percona-icu-data-files' => $version_server },
-    default => {}
   }
 
-  # Merge base and OS-specific packages
+  # Merge base and OS-specific package
   $packages = merge($base_packages, $extra_packages)
 
   $packages.each |String $pkg_name, String $pkg_version| {
@@ -51,19 +50,17 @@ class percona::server::package (
   }
 
   # Base versionlock components
-  $versionlock_components = ['server', 'shared', 'client']
+  $versionlock_components = ['server-server', 'server-shared', 'server-client', 'icu-data-files']
 
   # OS-Specific versionlock components
   $extra_versionlock_components = $facts['os']['release']['major'] ? {
-    '8'  => ['shared-compat'],
-    '9'  => ['icu-data-files'],
-    default => []
+    '8'  => ['server-shared-compat'],
   }
 
   $all_versionlock_components = concat($versionlock_components, $extra_versionlock_components)
 
   $all_versionlock_components.each |String $component| {
-    yum::versionlock { "percona-server-${component}":
+    yum::versionlock { "percona-${component}":
       ensure  => $versionlock_ensure,
       version => $percona_package_version,
       release => $percona_package_release,
