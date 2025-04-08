@@ -56,9 +56,9 @@ class percona::cluster::package (
 
     ['server','client','shared', 'shared-compat'].each |String $percona_component| {
       yum::versionlock { "percona-xtradb-cluster-${percona_component}":
-        ensure  => "${percona_versionlock}",
-        version => "${percona_package_version}",
-        release => "${percona_package_release}",
+        ensure  => $percona_versionlock,
+        version => $percona_package_version,
+        release => $percona_package_release,
         epoch   => 0,
         arch    => 'x86_64',
       }
@@ -113,9 +113,9 @@ class percona::cluster::package (
 
     ['garbd','galera'].each |String $percona_component| {
       yum::versionlock { "Percona-XtraDB-Cluster-${percona_component}-${_galera_major_version}":
-        ensure  => "${percona_versionlock}",
-        version => "${galera_package_version}",
-        release => "${galera_package_release}",
+        ensure  => $percona_versionlock,
+        version => $galera_package_version,
+        release => $galera_package_release,
         epoch   => 0,
         arch    => 'x86_64',
       }
@@ -142,9 +142,9 @@ class percona::cluster::package (
         -> Package["Percona-XtraDB-Cluster-garbd-${_percona_major_version}"]
 
         yum::versionlock { "Percona-XtraDB-Cluster-garbd-${_percona_major_version}":
-          ensure  => "${percona_versionlock}",
-          version => "${percona_package_version}",
-          release => "${percona_package_release}",
+          ensure  => $percona_versionlock,
+          version => $percona_package_version,
+          release => $percona_package_release,
           epoch   => 0,
           arch    => 'x86_64',
         }
@@ -166,9 +166,9 @@ class percona::cluster::package (
 
         ['garbd','shared-compat'].each |String $percona_component| {
           yum::versionlock { "Percona-XtraDB-Cluster-${percona_component}-${_percona_major_version}":
-            ensure  => "${percona_versionlock}",
-            version => "${percona_package_version}",
-            release => "${percona_package_release}",
+            ensure  => $percona_versionlock,
+            version => $percona_package_version,
+            release => $percona_package_release,
             epoch   => 0,
             arch    => 'x86_64',
           }
@@ -191,9 +191,9 @@ class percona::cluster::package (
 
         ['garbd'].each |String $percona_component| {
           yum::versionlock { "Percona-XtraDB-Cluster-${percona_component}-${_percona_major_version}":
-            ensure  => "${percona_versionlock}",
-            version => "${percona_package_version}",
-            release => "${percona_package_release}",
+            ensure  => $percona_versionlock,
+            version => $percona_package_version,
+            release => $percona_package_release,
             epoch   => 0,
             arch    => 'x86_64',
           }
@@ -204,9 +204,9 @@ class percona::cluster::package (
 
     ['server','client','shared'].each |String $percona_component| {
       yum::versionlock { "Percona-XtraDB-Cluster-${percona_component}-${_percona_major_version}":
-        ensure  => "${percona_versionlock}",
-        version => "${percona_package_version}",
-        release => "${percona_package_release}",
+        ensure  => $percona_versionlock,
+        version => $percona_package_version,
+        release => $percona_package_release,
         epoch   => 0,
         arch    => 'x86_64',
       }
