@@ -18,41 +18,40 @@ class percona::server::config (
   $ssl_cert           = undef,
   $version_server     = $version_server,
   $default_config     = {
-    server-id          => 1,
-    bind_address       => '0.0.0.0',
-    character_set_server => 'utf8',
-    log-bin            => 'mysql-bin.log',
-    log-bin-index      => 'bin-log.index',
-    max_binlog_size    => '100M',
-    binlog_format      => 'ROW',
-    binlog_do_db       => undef,
-    binlog_space_limit => '800M',
-    binlog_row_image   => undef,
-    expire_logs_days   => 10,
-    innodb_autoinc_lock_mode => 2,
-    innodb_ft_min_token_size => 2,
+    server-id                       => 1,
+    bind_address                    => '0.0.0.0',
+    character_set_server            => 'utf8',
+    log-bin                         => 'mysql-bin.log',
+    log-bin-index                   => 'bin-log.index',
+    max_binlog_size                 => '100M',
+    binlog_format                   => 'ROW',
+    binlog_do_db                    => undef,
+    binlog_space_limit              => '800M',
+    binlog_row_image                => undef,
+    expire_logs_days                => 10,
+    innodb_autoinc_lock_mode        => 2,
+    innodb_ft_min_token_size        => 2,
     log_bin_trust_function_creators => undef,
-    general-log        => '/var/log/mysqld.log',
-    slow_query_log_file  => '/var/log/mysql-slow.log',
-    slow_query_log     => 'ON',
-    sql_mode           => undef,
-    max_connections    => undef,
-    max_connect_errors => undef,
-    time_zone          => undef,
-    max_allowed_packet => '16M',
-    gtid_mode          => undef,
-    enforce_gtid_consistency => undef,
-    innodb_locks_unsafe_for_binlog => undef,
-    innodb_buffer_pool_size => '256M',
-    thread_stack       => undef,
-    thread_cache_size  => undef,
-    query_cache_limit  => undef,
-    query_cache_size   => undef,
-    skip_name_resolve  => 'ON'
+    general-log                     => '/var/log/mysqld.log',
+    slow_query_log_file             => '/var/log/mysql-slow.log',
+    slow_query_log                  => 'ON',
+    sql_mode                        => undef,
+    max_connections                 => undef,
+    max_connect_errors              => undef,
+    time_zone                       => undef,
+    max_allowed_packet              => '16M',
+    gtid_mode                       => undef,
+    enforce_gtid_consistency        => undef,
+    innodb_locks_unsafe_for_binlog  => undef,
+    innodb_buffer_pool_size         => '256M',
+    thread_stack                    => undef,
+    thread_cache_size               => undef,
+    query_cache_limit               => undef,
+    query_cache_size                => undef,
+    skip_name_resolve               => 'ON',
   },
   $additional_config  = {},
 ) {
-
   $config = deep_merge($default_config,$additional_config)
 
   file { '/etc/my.cnf':
@@ -81,20 +80,20 @@ class percona::server::config (
   if $config['slow_query_log'] == 'ON' {
 #   https://www.percona.com/blog/2013/04/18/rotating-mysql-slow-logs-safely/
     logrotate::rule { 'mysql-slow':
-        ensure        => absent,
-        path          => '/var/log/mysql-slow.log',
-        create        => true,
-        create_owner  => 'mysql',
-        create_group  => 'mysql',
-        create_mode   => '0660',
-        size          => '100M',
-        compress      => false,
-        dateext       => true,
-        missingok     => true,
-        ifempty       => false,
-        sharedscripts => true,
-        rotate        => 2,
-        postrotate    => '/usr/bin/mysql -qe "select @@global.long_query_time into @lqt_save; set global long_query_time=2000; select sleep(2); FLUSH SLOW LOGS; select sleep(2); set global long_query_time=@lqt_save;"'
+      ensure        => absent,
+      path          => '/var/log/mysql-slow.log',
+      create        => true,
+      create_owner  => 'mysql',
+      create_group  => 'mysql',
+      create_mode   => '0660',
+      size          => '100M',
+      compress      => false,
+      dateext       => true,
+      missingok     => true,
+      ifempty       => false,
+      sharedscripts => true,
+      rotate        => 2,
+      postrotate    => '/usr/bin/mysql -qe "select @@global.long_query_time into @lqt_save; set global long_query_time=2000; select sleep(2); FLUSH SLOW LOGS; select sleep(2); set global long_query_time=@lqt_save;"'
     }
   }
 
@@ -142,5 +141,4 @@ class percona::server::config (
       ssl_cert    => $ssl_cert,
     }
   }
-
 }
