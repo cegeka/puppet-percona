@@ -33,7 +33,7 @@ class percona::server::package(
       $xtrabackup_name          => $version_xtrabackup,
     },
     default => {
-      # We don't provide any other versions
+      warning("We don't provide any other versions")
     },
   }
 
