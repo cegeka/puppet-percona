@@ -24,9 +24,9 @@ class percona::server::package(
     '8.0' => {
       $real_package_name        => $version_server,
       $xtrabackup_name          => $version_xtrabackup,
-      "percona-server-client"   => $version_server,
-      "percona-server-shared"   => $version_server,
-      "percona-icu-data-files"  => $version_server,
+      'percona-server-client'   => $version_server,
+      'percona-server-shared'   => $version_server,
+      'percona-icu-data-files'  => $version_server,
     },
     '5.7' => {
       "${real_package_name}"    => $version_server,
