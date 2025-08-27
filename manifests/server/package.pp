@@ -11,6 +11,7 @@ class percona::server::package(
 ) {
   $percona_major_version   = regsubst($version_server, '^(\d\.\d)\.(\d+)-(.*)','\1')
   $_percona_major_version  = regsubst($percona_major_version, '\.', '', 'G')
+  $percona_major           = regsubst($percona_major_version, '^(\d+)\..*$', '\1')
   $percona_package_version = regsubst($version_server, '^(.*?)-(.*)','\1')
   $percona_package_release = regsubst($version_server, '^(.*?)-(.*)','\2')
 
@@ -20,15 +21,15 @@ class percona::server::package(
     $real_package_name = "Percona-Server-server-${_percona_major_version}"
   }
 
-  $packages_to_install = $percona_major_version ? {
-    '8.0' => {
+  $packages_to_install = $percona_major ? {
+    '8' => {
       $real_package_name        => $version_server,
       $xtrabackup_name          => $version_xtrabackup,
       'percona-server-client'   => $version_server,
       'percona-server-shared'   => $version_server,
       'percona-icu-data-files'  => $version_server,
     },
-    '5.7' => {
+    '5' => {
       "${real_package_name}"    => $version_server,
       $xtrabackup_name          => $version_xtrabackup,
     },
