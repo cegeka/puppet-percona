@@ -32,9 +32,7 @@ class percona::server::package(
       "${real_package_name}"    => $version_server,
       $xtrabackup_name          => $version_xtrabackup,
     },
-    default => {
-      warning("We don't provide any other versions")
-    },
+    default => warning("We don't provide any other versions")
   }
 
   $packages_to_install.each |$pkg_name, $pkg_ensure| {
