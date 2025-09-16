@@ -39,6 +39,7 @@ class percona::server::package(
   $packages_to_install.each |$pkg_name, $pkg_ensure| {
     package {
       $pkg_name:
+        ensure => $version_server;
     }
   }
 
