@@ -70,6 +70,13 @@ define percona::provision::rights (
         require    => [Percona_user["${user}@${host}"], Service['mysqld']],
       }
     }
+    if $binlog_admin {
+      exec { "grant binlog_admin_${user}@${host}":
+        command => "mysql -e \"GRANT BINLOG_ADMIN ON *.* TO '${user}'@'${host}'\"",
+        unless  => "mysql -e \"SHOW GRANTS FOR '${user}'@'${host}'\" | grep -iq BINLOG_ADMIN",
+        path    => '/usr/bin',
+      }
+    }
   } else {
     fail("Mysql binary not found, Fact[::mysql_exists]:${::mysql_exists}")
   }
