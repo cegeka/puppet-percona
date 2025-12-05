@@ -1,37 +1,48 @@
-# == Definition: mysql::rights
+# @summary A basic helper used to create a user and grant him some privileges on a database.
 #
-# A basic helper used to create a user and grant him some privileges on a database.
-#
-# Example usage:
+# @example
 #  percona::provision::rights { "example case":
 #    user            => "foo",
 #    password_hash   => "bar",
 #    database        => "mydata",
 #    priv            => ["select_priv", "update_priv"],
-#    sectret_id      => 123456
+#    secretid      => 123456
 #  }
 #
-#Available parameters:
-#- *$ensure": defaults to present
-#- *$database*: the target database
-#- *$user*: the target user
-#- *$password_hash*: user's hashed password
-#- *$secretid*: the ID for PIM
-#- *$host*: target host, default to "localhost"
-#- *$priv*: target privileges, defaults to "all" (values are the fieldnames from mysql.db table).
+# @param database
+#   The target database
+# @param user
+#   The target user
+# @param password_hash
+#   User's hashed password
+# @param secretid
+#   The ID for PIM
+# @param host
+#   Target host, default to "localhost"
+# @param ensure
+#   Defaults to present
+# @param priv
+#   Target privileges, defaults to "all" (values are the fieldnames from mysql.db table)
+# @param type
+#   The type of grant, defaults to "server" (other value is "database")
+# @param global
+#   Whether to apply the grant globally (on all databases) or not
+# @param binlog_admin
+#   Whether to grant the BINLOG_ADMIN privilege or not
+#
 
-define percona::provision::rights(
-  $database,
-  $user,
-  $password_hash=undef,
-  $secretid=undef,
-  $host='localhost',
-  $ensure='present',
-  $priv='all',
-  $type='server',
-  $global=false
+define percona::provision::rights (
+  String $database,
+  String $user,
+  Optional[String] $password_hash = undef,
+  Optional[Integer] $secretid = undef,
+  String $host = 'localhost',
+  String $ensure = 'present',
+  Variant[String, Array[String]] $priv = 'all',
+  String $type = 'server',
+  Boolean $global = false,
+  Boolean $binlog_admin = false,
 ) {
-
   if $::mysql_exists {
     if $secretid == undef and $password_hash == undef {
       fail('You must provide a password hash or a secretid to ::mysql::rights')
@@ -45,20 +56,20 @@ define percona::provision::rights(
     }
 
     ensure_resource('percona_user', "${user}@${host}", {
-      ensure        => $ensure,
-      password_hash => $mysql_password,
-      provider      => 'mysql',
-      require       => Service['mysqld']
+        ensure        => $ensure,
+        password_hash => $mysql_password,
+        provider      => 'mysql',
+        require       => Service['mysqld']
     })
 
     if $global { $real_type = '' } else { $real_type = "/${database}"}
-      if $ensure == 'present' {
-        mysql_grant { "${user}@${host}${real_type}":
-          privileges => $priv,
-          provider   => 'mysql',
-          require    => [ Percona_user["${user}@${host}"], Service["mysqld"] ]
-        }
+    if $ensure == 'present' {
+      mysql_grant { "${user}@${host}${real_type}":
+        privileges => $priv,
+        provider   => 'mysql',
+        require    => [Percona_user["${user}@${host}"], Service['mysqld']],
       }
+    }
   } else {
     fail("Mysql binary not found, Fact[::mysql_exists]:${::mysql_exists}")
   }
