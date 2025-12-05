@@ -72,7 +72,7 @@ define percona::provision::rights (
     }
     if $binlog_admin {
       exec { "grant binlog_admin_${user}@${host}":
-        command => "mysql -e \"GRANT BINLOG_ADMIN ON *.* TO '${user}'@'${host}'\"",
+        command => "mysql -e \"GRANT BINLOG_ADMIN ON *.* TO '${user}'@'${host}' WITH GRANT OPTION\"",
         unless  => "mysql -e \"SHOW GRANTS FOR '${user}'@'${host}'\" | grep -iq BINLOG_ADMIN",
         path    => '/usr/bin',
       }
