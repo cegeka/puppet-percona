@@ -48,6 +48,10 @@ define percona::provision::rights (
       fail('You must provide a password hash or a secretid to ::mysql::rights')
     }
 
+    if $database == '' and !$global {
+      fail('Database parameter is required when global is false')
+    }
+
     if $secretid != undef {
       $pim_password = getsecret($secretid, 'Password')
       $mysql_password = mysql_password($pim_password)
