@@ -74,11 +74,21 @@ define percona::provision::rights (
         require    => [Percona_user["${user}@${host}"], Service['mysqld']],
       }
     }
+    # Grant BINLOG_ADMIN if requested
     if $binlog_admin {
-      exec { "grant binlog_admin_${user}@${host}":
-        command => "mysql -e \"GRANT BINLOG_ADMIN ON *.* TO '${user}'@'${host}' WITH GRANT OPTION\"",
-        unless  => "mysql -e \"SHOW GRANTS FOR '${user}'@'${host}'\" | grep -iq BINLOG_ADMIN",
-        path    => '/usr/bin',
+      exec { "grant_binlog_admin_${user}_${host}":
+        command => "mysql --defaults-file=/root/.my.cnf -e \"GRANT BINLOG_ADMIN ON *.* TO '${user}'@'${host}' WITH GRANT OPTION\"",
+        unless  => "mysql --defaults-file=/root/.my.cnf -e \"SHOW GRANTS FOR '${user}'@'${host}'\" 2>/dev/null | grep -iq BINLOG_ADMIN",
+        path    => ['/usr/bin', '/bin'],
+        require => [Percona_user["${user}@${host}"], Service['mysqld']],
+      }
+    } else {
+      # Revoke BINLOG_ADMIN if not requested (cleanup)
+      exec { "revoke_binlog_admin_${user}_${host}":
+        command => "mysql --defaults-file=/root/.my.cnf -e \"REVOKE BINLOG_ADMIN ON *.* FROM '${user}'@'${host}'\"",
+        onlyif  => "mysql --defaults-file=/root/.my.cnf -e \"SHOW GRANTS FOR '${user}'@'${host}'\" 2>/dev/null | grep -iq BINLOG_ADMIN",
+        path    => ['/usr/bin', '/bin'],
+        require => Service['mysqld'],
       }
     }
   } else {
