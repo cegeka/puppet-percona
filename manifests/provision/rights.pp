@@ -1,4 +1,4 @@
-# @summary A basic helper used to create a user and grant him some privileges on a database.
+# @summary A basic helper used to create a user and grant some privileges on a database.
 #
 # @example
 #  percona::provision::rights { "example case":
@@ -30,7 +30,6 @@
 # @param binlog_admin
 #   Whether to grant the BINLOG_ADMIN privilege or not
 #
-
 define percona::provision::rights (
   String $database,
   String $user,
