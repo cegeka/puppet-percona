@@ -27,8 +27,6 @@
 #   The type of grant, defaults to "server" (other value is "database")
 # @param global
 #   Whether to apply the grant globally (on all databases) or not
-# @param binlog_admin
-#   Whether to grant the BINLOG_ADMIN privilege or not
 #
 define percona::provision::rights (
   String $database,
@@ -40,7 +38,6 @@ define percona::provision::rights (
   Variant[String, Array[String]] $priv = 'all',
   String $type = 'server',
   Boolean $global = false,
-  Boolean $binlog_admin = false,
 ) {
   if $::mysql_exists {
     if $secretid == undef and $password_hash == undef {
@@ -71,23 +68,6 @@ define percona::provision::rights (
         privileges => $priv,
         provider   => 'mysql',
         require    => [Percona_user["${user}@${host}"], Service['mysqld']],
-      }
-    }
-    # Grant BINLOG_ADMIN if requested
-    if $binlog_admin {
-      exec { "grant_binlog_admin_${user}_${host}":
-        command => "mysql --defaults-file=/root/.my.cnf -e \"GRANT BINLOG_ADMIN ON *.* TO '${user}'@'${host}' WITH GRANT OPTION\"",
-        unless  => "mysql --defaults-file=/root/.my.cnf -e \"SHOW GRANTS FOR '${user}'@'${host}'\" 2>/dev/null | grep -iq BINLOG_ADMIN",
-        path    => ['/usr/bin', '/bin'],
-        require => [Percona_user["${user}@${host}"], Service['mysqld']],
-      }
-    } else {
-      # Revoke BINLOG_ADMIN if not requested (cleanup)
-      exec { "revoke_binlog_admin_${user}_${host}":
-        command => "mysql --defaults-file=/root/.my.cnf -e \"REVOKE BINLOG_ADMIN ON *.* FROM '${user}'@'${host}'\"",
-        onlyif  => "mysql --defaults-file=/root/.my.cnf -e \"SHOW GRANTS FOR '${user}'@'${host}'\" 2>/dev/null | grep -iq BINLOG_ADMIN",
-        path    => ['/usr/bin', '/bin'],
-        require => Service['mysqld'],
       }
     }
   } else {
