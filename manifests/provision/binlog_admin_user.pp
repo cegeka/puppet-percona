@@ -7,7 +7,7 @@
 # @param ensure
 #   Whether to grant (true) or revoke (false) the privilege (default: false)
 #
-define percona::binlog_admin_user (
+define percona::provision::binlog_admin_user (
   String $user,
   String $host = 'localhost',
   Boolean $ensure = false,
