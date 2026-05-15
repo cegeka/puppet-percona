@@ -30,6 +30,7 @@ class percona::cluster (
   $root_password             = undef,
   $additional_config         = undef,
   $ssl_ca_client_path        = undef,
+  $deprecated_config         = true,
 ) {
   if ! $version_server {
     fail('Class[Percona::Cluster]: parameter version_server must be provided')
@@ -85,6 +86,7 @@ class percona::cluster (
     ssl_cert           => $ssl_cert,
     ssl_key            => $ssl_key,
     additional_config  => $additional_config,
+    deprecated_config  => $deprecated_config,
     ssl_ca_client_path => $ssl_ca_client_path,
   }
 

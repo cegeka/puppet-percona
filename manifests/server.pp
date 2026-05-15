@@ -19,7 +19,8 @@ class percona::server (
   $ssl_key             = undef,
   $secret_file         = undef,
   $root_password       = undef,
-  $additional_config   = undef
+  $additional_config   = undef,
+  $deprecated_config   = true,
 ) {
   if ! $version_server {
     fail('Class[Percona::Server]: parameter version_server must be provided')
@@ -50,6 +51,7 @@ class percona::server (
     ssl_cert          => $ssl_cert,
     ssl_key           => $ssl_key,
     additional_config => $additional_config,
+    deprecated_config => $deprecated_config,
     service_name      => $service_name,
     version_server    => $version_server,
   }

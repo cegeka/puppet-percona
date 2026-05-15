@@ -17,7 +17,7 @@ class percona::server::config (
   $ssl_key            = undef,
   $ssl_cert           = undef,
   $version_server     = $version_server,
-  $default_config     = {
+  $default_config_dep = {
     server-id                       => 1,
     bind_address                    => '0.0.0.0',
     character_set_server            => 'utf8',
@@ -50,9 +50,63 @@ class percona::server::config (
     query_cache_size                => undef,
     skip_name_resolve               => 'ON',
   },
+  $default_config     = {
+    server-id                       => 1,
+    bind_address                    => '0.0.0.0',
+    character_set_server            => 'utf8',
+    log-bin                         => 'mysql-bin.log',
+    log-bin-index                   => 'bin-log.index',
+    max_binlog_size                 => '100M',
+    binlog_do_db                    => undef,
+    binlog_space_limit              => '800M',
+    binlog_row_image                => undef,
+    binlog_expire_logs_seconds      => 864000,
+    innodb_autoinc_lock_mode        => 2,
+    innodb_ft_min_token_size        => 2,
+    log_bin_trust_function_creators => undef,
+    general_log_file                => '/var/log/mysqld.log',
+    slow_query_log_file             => '/var/log/mysql-slow.log',
+    slow_query_log                  => 'ON',
+    sql_mode                        => undef,
+    max_connections                 => undef,
+    max_connect_errors              => undef,
+    time_zone                       => undef,
+    max_allowed_packet              => '16M',
+    gtid_mode                       => undef,
+    enforce_gtid_consistency        => undef,
+    innodb_locks_unsafe_for_binlog  => undef,
+    innodb_buffer_pool_size         => '256M',
+    thread_stack                    => undef,
+    thread_cache_size               => undef,
+    query_cache_limit               => undef,
+    query_cache_size                => undef,
+    skip_name_resolve               => 'ON',
+  },
   $additional_config  = {},
+  $deprecated_config  = true,
 ) {
-  $config = deep_merge($default_config,$additional_config)
+
+  if $deprecated_config {
+    $config = deep_merge($default_config_dep,$additional_config)
+
+    file {
+      $config['general-log'] :
+        ensure => present,
+        owner  => 'mysql',
+        group  => 'mysql',
+        mode   => '0644';
+    }
+  } else {
+    $config = deep_merge($default_config,$additional_config)
+
+    file {
+      $config['general_log_file'] :
+        ensure => present,
+        owner  => 'mysql',
+        group  => 'mysql',
+        mode   => '0644';
+    }
+  }
 
   file { '/etc/my.cnf':
     ensure  => present,
@@ -65,11 +119,6 @@ class percona::server::config (
   }
 
   file {
-    $config['general-log'] :
-      ensure => present,
-      owner  => 'mysql',
-      group  => 'mysql',
-      mode   => '0644';
     $config['slow_query_log_file'] :
       ensure => present,
       owner  => 'mysql',
