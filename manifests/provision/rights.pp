@@ -27,6 +27,11 @@
 #   The type of grant, defaults to "server" (other value is "database")
 # @param global
 #   Whether to apply the grant globally (on all databases) or not
+#   **WARNING**: when setting a true global value to false, global permission are not revoked.
+#   Manual intervention is required for this:
+#   - Check user grants: `SHOW GRANTS FOR <user>;`
+#     Acceptable global grant is: ``GRANT USAGE ON *.* TO `<user>`@`%` ``
+#   - Revoke global grants: `REVOKE ALL ON *.* FROM '<user>'@'%';`
 #
 define percona::provision::rights (
   String $database,
