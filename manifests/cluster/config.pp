@@ -78,7 +78,6 @@ class percona::cluster::config(
     wsrep_cluster_name              => $cluster_name,
     wsrep_provider                  => '/usr/lib64/libgalera_smm.so',
     wsrep_applier_threads           => 8,
-    wsrep_causal_reads              => 1,
     wsrep_sync_wait                 => undef,
     wsrep_log_conflicts             => 'ON',
     log-bin                         => "${binlog_dir}/mysql-bin",
